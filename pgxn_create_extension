@@ -1,0 +1,114 @@
+#!/bin/bash
+##
+# Copyright (c) 2010-2011 Dickson S. Guedes.
+# 
+# This module is free software; you can redistribute it and/or modify it under
+# the [PostgreSQL License](http://www.opensource.org/licenses/postgresql).
+# 
+# Permission to use, copy, modify, and distribute this software and its
+# documentation for any purpose, without fee, and without a written agreement is
+# hereby granted, provided that the above copyright notice and this paragraph
+# and the following two paragraphs appear in all copies.
+# 
+# In no event shall Dickson S. Guedes be liable to any party for direct,
+# indirect, special, incidental, or consequential damages, including lost
+# profits, arising out of the use of this software and its documentation, even
+# if Dickson S. Guedes has been advised of the possibility of such damage.
+# 
+# Dickson S. Guedes specifically disclaims any warranties, including, but not
+# limited to, the implied warranties of merchantability and fitness for a
+# particular purpose. The software provided hereunder is on an "as is" basis,
+# and Dickson S. Guedes has no obligations to provide maintenance, support,
+# updates, enhancements, or modifications.
+##
+[ $# -lt 2 ] && echo "Usage: $0 name short_description" && exit
+
+extension=$1
+shift
+description=$*
+
+userlogin=$USER
+username=`grep $userlogin /etc/passwd | cut -d":" -f5 | cut -d "," -f1`
+
+[ -d $extension ] &&  echo "$extension already exists" && exit
+
+echo -n creating dirs
+mkdir -p $extension/{sql,doc,test/{sql,expected}}
+touch $extension/{sql/{$extension,uninstall_$extension}.sql,doc/$extension.md,test/{sql/base.sql,expected/base.out}}
+echo "results/" > $extension/.gitignore
+echo ... ok
+
+echo -n creating META.json
+cat > $extension/META.json <<EOF 
+{
+   "name": "$extension",
+   "abstract": "$description",
+   "description": "A long description for $extension",
+   "version": "1.0.0",
+   "maintainer": [
+      "$username \<your@email.here\>"
+   ],
+   "license": "postgresql",
+   "provides": {
+      "$extension": {
+         "abstract": "",
+         "file": "sql/$extension.sql",
+         "docfile": "doc/$extension.md",
+         "version": "1.0.0"
+      }
+   },
+   "generated_by": "$username",
+   "meta-spec": {
+      "version": "1.0.0",
+      "url": "http://pgxn.org/meta/spec.txt"
+   },
+   "tags": [
+      "$extension",
+      "some",
+      "tags"
+   ]
+}
+EOF
+echo ... ok
+
+echo -n creating Makefile
+cat > $extension/Makefile <<EOF
+EXTENSION    = $extension
+EXTVERSION   = \$(shell grep default_version \$(EXTENSION).control | \
+               sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
+
+DATA         = \$(filter-out \$(wildcard sql/*--*.sql),\$(wildcard sql/*.sql))
+DOCS         = \$(wildcard doc/*.txt)
+TESTS        = \$(wildcard test/sql/*.sql)
+REGRESS      = \$(patsubst test/sql/%.sql,%,\$(TESTS))
+REGRESS_OPTS = --inputdir=test --load-language=plpgsql
+MODULES      = \$(patsubst %.c,%,\$(wildcard src/*.c))
+PG_CONFIG    = pg_config
+PG91         = \$(shell \$(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no || echo yes)
+
+ifeq (\$(PG91),yes)
+all: sql/\$(EXTENSION)--\$(EXTVERSION).sql
+
+sql/\$(EXTENSION)--\$(EXTVERSION).sql: sql/\$(EXTENSION).sql
+	cp $< \$@
+
+DATA = \$(wildcard sql/*--*.sql) sql/\$(EXTENSION)--\$(EXTVERSION).sql
+EXTRA_CLEAN = sql/\$(EXTENSION)--\$(EXTVERSION).sql
+endif
+
+PGXS := \$(shell \$(PG_CONFIG) --pgxs)
+include \$(PGXS)
+EOF
+echo  ... ok
+
+echo -n creating $extension.control
+cat > $extension/$extension.control <<EOF
+# $extension extension
+comment = '$description'
+default_version = '1.0.0'
+module_pathname = '$libdir/$extension'
+relocatable = true
+EOF
+echo ... ok
+
+echo all done
