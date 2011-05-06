@@ -1,3 +1,3 @@
 module PgxnUtils
-  # Your code goes here...
+ autoload :CLI, 'pgxn_utils/cli'
 end
