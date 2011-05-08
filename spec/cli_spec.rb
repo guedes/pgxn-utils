@@ -1,30 +1,52 @@
 require File.expand_path('spec/spec_helper')
 
 describe PgxnUtils::CLI do
-  before(:each) do
-      @cli = PgxnUtils::CLI.new
-      @extension_name = "extension_test.#{$$}"
+
+  after(:all) do
+    system "rm -rf /tmp/*.#{$$}"
   end
+
   context "create extension" do
-    it "should accepts a path and extracts destination and extension name"
+    before(:each) do
+      @cli = PgxnUtils::CLI.new
+    end
+
+    it "should set destination root and extension name when a path is supplied" do
+      extension_path = "/tmp/my_cool_extension.#{$$}"
+      @cli.create_extension(extension_path)
+      @cli.extension_name.should == "my_cool_extension.#{$$}"
+      @cli.destination_root.should == "/tmp"
+    end
+
+    it "should store author's name and email" do
+      @cli.create_extension("/tmp/guedes.extension.#{$$}","Guedes","guedes@nonexistant")
+      @cli.author_name.should == "Guedes"
+      @cli.author_mail.should == "guedes@nonexistant"
+    end
 
     it "should generates an skeleton" do
-      @cli.create_extension(@extension_name)
-      Dir["#{@extension_name}/**/*"].sort.should be_eql([
-        "#{@extension_name}/META.json", 
-        "#{@extension_name}/Makefile",
-        "#{@extension_name}/doc", 
-        "#{@extension_name}/doc/#{@extension_name}.md", 
-        "#{@extension_name}/sql", 
-        "#{@extension_name}/sql/#{@extension_name}.sql", 
-        "#{@extension_name}/sql/uninstall_#{@extension_name}.sql", 
-        "#{@extension_name}/test", 
-        "#{@extension_name}/test/expected", 
-        "#{@extension_name}/test/expected/base.out", 
-        "#{@extension_name}/test/sql", 
-        "#{@extension_name}/test/sql/base.sql", 
-        "#{@extension_name}/#{@extension_name}.control"
-      ].sort)
+      extension_path = "/tmp/extension_test.#{$$}"
+
+      @cli.create_extension(extension_path)
+
+      extension_name = @cli.extension_name
+      extension_root = @cli.destination_root
+
+      Dir["#{extension_path}/**/*"].sort.should == [
+        "#{extension_path}/META.json",
+        "#{extension_path}/Makefile",
+        "#{extension_path}/doc",
+        "#{extension_path}/doc/#{extension_name}.md",
+        "#{extension_path}/sql",
+        "#{extension_path}/sql/#{extension_name}.sql",
+        "#{extension_path}/sql/uninstall_#{extension_name}.sql",
+        "#{extension_path}/test",
+        "#{extension_path}/test/expected",
+        "#{extension_path}/test/expected/base.out",
+        "#{extension_path}/test/sql",
+        "#{extension_path}/test/sql/base.sql",
+        "#{extension_path}/#{extension_name}.control"
+      ].sort
     end
 
     it "should generates a test skeleton"

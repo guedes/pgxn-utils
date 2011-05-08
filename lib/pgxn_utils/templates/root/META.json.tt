@@ -1,0 +1,28 @@
+{
+   "name": "<%= extension_name %>",
+   "abstract": "template",
+   "description": "A long description for <%= extension_name %>",
+   "version": "1.0.0",
+   "maintainer": [
+      "<%= author_name %> \<<%= author_mail %>\>"
+   ],
+   "license": "postgresql",
+   "provides": {
+      "<%= extension_name %>": {
+         "abstract": "",
+         "file": "sql/<%= extension_name %>.sql",
+         "docfile": "doc/<%= extension_name %>.md",
+         "version": "1.0.0"
+      }
+   },
+   "generated_by": "<%= author_name %>",
+   "meta-spec": {
+      "version": "1.0.0",
+      "url": "http://pgxn.org/meta/spec.txt"
+   },
+   "tags": [
+      "templ",
+      "some",
+      "tags"
+   ]
+}
