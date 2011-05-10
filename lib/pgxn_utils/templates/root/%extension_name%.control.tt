@@ -1,5 +1,5 @@
 # <%= extension_name %> extension
-comment = 'template'
+comment = '<%= short_description %>'
 default_version = '1.0.0'
 module_pathname = '/<%= extension_name %>'
 relocatable = true

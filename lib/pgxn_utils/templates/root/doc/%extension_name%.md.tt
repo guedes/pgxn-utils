@@ -1,0 +1,4 @@
+<%= extension_name %>
+<%= extension_name.gsub(/./,"-") %>
+
+<%= long_description %>
