@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.date        = %q{2011-05-06}
   s.authors     = ["Dickson S. Guedes"]
   s.email       = ["guedes@guedesoft.net"]
-  s.homepage    = "http://github.com/guedes/pgxn-xn"
+  s.homepage    = "http://github.com/guedes/pgxn-utils"
   s.summary     = %q{A PGXN set of tools to developers}
   s.description = %q{A PGXN set of tools to help developers create and publish your PostgreSQL extensions without pain}
 
