@@ -58,6 +58,7 @@ describe PgxnUtils::CLI do
       Dir["#{extension}/**/*"].sort.should == [
         "#{extension}/META.json",
         "#{extension}/Makefile",
+        "#{extension}/README.md",
         "#{extension}/doc",
         "#{extension}/doc/#{extension}.md",
         "#{extension}/sql",
