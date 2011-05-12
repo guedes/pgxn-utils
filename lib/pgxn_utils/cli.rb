@@ -7,20 +7,20 @@ module PgxnUtils
 
     desc "skeleton extension_name", "Creates an extension skeleton in current directory."
 
-    method_option :target,            :aliases => "-p", :default => "."
+    method_option :target,            :aliases => "-p", :default => ".",    :desc => "Define the target directory"
 
     # META required fields
-    method_option :maintainer,        :aliases => "-m", :type => :string,   :default => "The maintainer's name"
-    method_option :maintainer_mail,   :aliases => "-e", :type => :string,   :default => "maintainer@email.here"
-    method_option :abstract,          :aliases => "-a", :type => :string,   :default => "A short description"
-    method_option :license,           :aliases => "-l", :type => :string,   :default => "postgresql"
-    method_option :version,           :aliases => "-v", :type => :string,   :default => "0.0.1"
+    method_option :maintainer,        :aliases => "-m", :type => :string,   :default => "The maintainer's name", :desc => "Maintainer's name"
+    method_option :maintainer_mail,   :aliases => "-e", :type => :string,   :default => "maintainer@email.here", :desc => "Maintainer's mail"
+    method_option :abstract,          :aliases => "-a", :type => :string,   :default => "A short description",   :desc => "Defines a short description to abstract"
+    method_option :license,           :aliases => "-l", :type => :string,   :default => "postgresql",            :desc => "The extension license."
+    method_option :version,           :aliases => "-v", :type => :string,   :default => "0.0.1",                 :desc => "Initial version"
 
     # META optional fields
-    method_option :description,       :aliases => "-d", :type => :string,  :default => "A long description"
-    method_option :generated_by,      :aliases => "-b", :type => :string,  :default => "Generator's name"
-    method_option :tags,              :aliases => "-t", :type => :array
-    method_option :release_status,    :aliases => "-r", :type => :string,  :default => "unstable"
+    method_option :description,       :aliases => "-d", :type => :string,  :default => "A long description",     :desc => "A long text that contains more information aboute extension"
+    method_option :generated_by,      :aliases => "-b", :type => :string,  :default => "Generator's name",       :desc => "Name of extension's generator"
+    method_option :tags,              :aliases => "-t", :type => :array,                                         :desc => "Defines extension's tags"
+    method_option :release_status,    :aliases => "-r", :type => :string,  :default => "unstable",               :desc => "Initial extension's release status"
 
     def skeleton(extension_name)
       self.set_accessors extension_name
