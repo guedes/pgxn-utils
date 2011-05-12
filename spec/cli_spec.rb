@@ -3,68 +3,85 @@ require File.expand_path('spec/spec_helper')
 describe PgxnUtils::CLI do
 
   after(:all) do
-    system "rm -rf /tmp/*.#{$$}"
+    system "rm -rf /tmp/extension.*"
+    system "rm -rf extension.*"
   end
 
-  context "create extension" do
+  context "create skeleton" do
     before(:each) do
       @cli = PgxnUtils::CLI.new
     end
 
-    it "should set destination root and extension name when a path is supplied" do
-      extension_path = "/tmp/my_cool_extension.#{$$}"
-      @cli.create_extension(extension_path)
-      @cli.extension_name.should == "my_cool_extension.#{$$}"
-      @cli.destination_root.should == "/tmp"
+    it "should accepts or not a target" do
+      expected_extension = next_extension
+
+      File.should_not exist(expected_extension)
+      skeleton "#{expected_extension}", "-p /tmp"
+      File.should exist("/tmp/#{expected_extension}")
+
+      File.should_not exist(expected_extension)
+      skeleton "#{expected_extension}"
+      File.should exist(expected_extension)
     end
 
-    it "should store author's name and email" do
-      @cli.create_extension("/tmp/guedes.extension.#{$$}","Guedes","guedes@nonexistant")
-      @cli.author_name.should == "Guedes"
-      @cli.author_mail.should == "guedes@nonexistant"
+    it "should store author's name, email, short_description, long_desctiption, tags" do
+      expected_extension = next_extension
+      expected_name = "Guedes"
+      expected_mail = "guedes@none.here"
+      expected_short_description = "Short description"
+      expected_long_description = "Very Long description for my cool extension"
+      expected_tags = "one two tree"
+
+      skeleton expected_extension, "-p /tmp -n #{expected_name} -m #{expected_mail} -t #{expected_tags} -s '#{expected_short_description}' -l '#{expected_long_description}'"
+
+      meta = File.read("/tmp/#{expected_extension}/META.json")
+      meta.should match(/"name": "#{expected_extension}"/)
+      meta.should match(/"abstract": "#{expected_short_description}"/)
+      meta.should match(/"description": "#{expected_long_description}"/)
+      meta.should match(/"#{expected_name} <#{expected_mail}>"/)
+      meta.should match(/"file": "sql\/#{expected_extension}.sql"/)
+      meta.should match(/"docfile": "doc\/#{expected_extension}.md"/)
+      meta.should match(/"generated_by": "#{expected_name}"/)
+      meta.should match(/, "tags": \[ "one","two","tree" \]/)
+
+      makefile = File.read("/tmp/#{expected_extension}/Makefile")
+      makefile.should match(/EXTENSION    = #{expected_extension}/)
+
+      control = File.read("/tmp/#{expected_extension}/#{expected_extension}.control")
+      control.should match(/module_pathname = '\/#{expected_extension}'/)
     end
 
-    it "should generates an skeleton" do
-      extension_path = "/tmp/extension_test.#{$$}"
+    it "should generates a skeleton" do
+      extension = next_extension
+      skeleton extension
 
-      @cli.create_extension(extension_path)
-
-      extension_name = @cli.extension_name
-      extension_root = @cli.destination_root
-
-      Dir["#{extension_path}/**/*"].sort.should == [
-        "#{extension_path}/META.json",
-        "#{extension_path}/Makefile",
-        "#{extension_path}/doc",
-        "#{extension_path}/doc/#{extension_name}.md",
-        "#{extension_path}/sql",
-        "#{extension_path}/sql/#{extension_name}.sql",
-        "#{extension_path}/sql/uninstall_#{extension_name}.sql",
-        "#{extension_path}/test",
-        "#{extension_path}/test/expected",
-        "#{extension_path}/test/expected/base.out",
-        "#{extension_path}/test/sql",
-        "#{extension_path}/test/sql/base.sql",
-        "#{extension_path}/#{extension_name}.control"
+      Dir["#{extension}/**/*"].sort.should == [
+        "#{extension}/META.json",
+        "#{extension}/Makefile",
+        "#{extension}/doc",
+        "#{extension}/doc/#{extension}.md",
+        "#{extension}/sql",
+        "#{extension}/sql/#{extension}.sql",
+        "#{extension}/sql/uninstall_#{extension}.sql",
+        "#{extension}/test",
+        "#{extension}/test/expected",
+        "#{extension}/test/expected/base.out",
+        "#{extension}/test/sql",
+        "#{extension}/test/sql/base.sql",
+        "#{extension}/#{extension}.control"
       ].sort
     end
 
-    it "should generates a test skeleton"
-    it "should accepts name and email as comand line"
-    it "should accepts short and long description as command line"
+    it "should generates a git repo"
   end
 
-  context "tests" do
-    it "should run tests and returns correct results"
+  context "bundle" do
+    it "should bundle to zip by default"
+    it "should create the name in semver spec"
   end
 
-  context "invoke external tasks" do
-    it "should execute sucessfuly"
-    it "should ignores non-existant external tasks"
+  context "release" do
+    it "should send the bundle to PGXN"
   end
 
-  context "manage extension" do
-    it "should update and tag version"
-    it "should upload to pgxn.org"
-  end
 end
