@@ -28,21 +28,21 @@ describe PgxnUtils::CLI do
       expected_extension = next_extension
       expected_name = "Guedes"
       expected_mail = "guedes@none.here"
-      expected_short_description = "Short description"
-      expected_long_description = "Very Long description for my cool extension"
+      expected_abstract = "Short description"
+      expected_description = "Very Long description for my cool extension"
       expected_tags = "one two tree"
 
-      skeleton expected_extension, "-p /tmp -n #{expected_name} -m #{expected_mail} -t #{expected_tags} -s '#{expected_short_description}' -l '#{expected_long_description}'"
+      skeleton expected_extension, "-p /tmp -m #{expected_name} -e #{expected_mail} -t #{expected_tags} -a '#{expected_abstract}' -d '#{expected_description}'"
 
       meta = File.read("/tmp/#{expected_extension}/META.json")
       meta.should match(/"name": "#{expected_extension}"/)
-      meta.should match(/"abstract": "#{expected_short_description}"/)
-      meta.should match(/"description": "#{expected_long_description}"/)
+      meta.should match(/"abstract": "#{expected_abstract}"/)
+      meta.should match(/"description": "#{expected_description}"/)
       meta.should match(/"#{expected_name} <#{expected_mail}>"/)
       meta.should match(/"file": "sql\/#{expected_extension}.sql"/)
       meta.should match(/"docfile": "doc\/#{expected_extension}.md"/)
       meta.should match(/"generated_by": "#{expected_name}"/)
-      meta.should match(/, "tags": \[ "one","two","tree" \]/)
+      meta.should match(/"tags": \[ "one","two","tree" \],/)
 
       makefile = File.read("/tmp/#{expected_extension}/Makefile")
       makefile.should match(/EXTENSION    = #{expected_extension}/)

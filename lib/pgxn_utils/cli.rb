@@ -1,17 +1,26 @@
 module PgxnUtils
   class CLI < Thor
-    attr_accessor :extension_name, :target, :author_name, :author_mail
-    attr_accessor :short_description, :long_description, :tags
+    attr_accessor :extension_name, :target, :maintainer, :maintainer_mail
+    attr_accessor :abstract, :description, :tags
 
     include Thor::Actions
 
     desc "skeleton extension_name", "Creates an extension skeleton in current directory."
+
     method_option :target,            :aliases => "-p", :default => "."
-    method_option :author_name,       :aliases => "-n", :type => :string,   :default => "Your Name Here"
-    method_option :author_mail,       :aliases => "-m", :type => :string,   :default => "your@email.here"
+
+    # META required fields
+    method_option :maintainer,        :aliases => "-m", :type => :string,   :default => "The maintainer's name"
+    method_option :maintainer_mail,   :aliases => "-e", :type => :string,   :default => "maintainer@email.here"
+    method_option :abstract,          :aliases => "-a", :type => :string,   :default => "A short description"
+    method_option :license,           :aliases => "-l", :type => :string,   :default => "postgresql"
+    method_option :version,           :aliases => "-v", :type => :string,   :default => "0.0.1"
+
+    # META optional fields
+    method_option :description,       :aliases => "-d", :type => :string,  :default => "A long description"
+    method_option :generated_by,      :aliases => "-b", :type => :string,  :default => "Generator's name"
     method_option :tags,              :aliases => "-t", :type => :array
-    method_option :short_description, :aliases => "-s", :type => :string,   :default => "A short description"
-    method_option :long_description,  :aliases => "-l", :type => :string ,  :default => "A long description"
+    method_option :release_status,    :aliases => "-r", :type => :string,  :default => "unstable"
 
     def skeleton(extension_name)
       self.set_accessors extension_name
@@ -24,11 +33,11 @@ module PgxnUtils
         self.extension_name = extension_name
 
         self.target = options[:target]
-        self.author_name = options[:author_name]
-        self.author_mail = options[:author_mail]
+        self.maintainer = options[:maintainer]
+        self.maintainer_mail = options[:maintainer_mail]
         self.tags = options[:tags]
-        self.short_description = options[:short_description]
-        self.long_description = options[:long_description]
+        self.abstract = options[:abstract]
+        self.description = options[:description]
 
         self.destination_root = target
       end

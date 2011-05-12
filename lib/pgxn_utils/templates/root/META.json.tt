@@ -1,26 +1,24 @@
 {
    "name": "<%= extension_name %>",
-   "abstract": "<%= short_description %>",
-   "description": "<%= long_description %>",
+   "abstract": "<%= abstract %>",
+   "description": "<%= description %>",
    "version": "1.0.0",
-   "maintainer": [
-      "<%= author_name %> <<%= author_mail %>>"
-   ],
+   "maintainer": "<%= maintainer %> <<%= maintainer_mail %>>",
    "license": "postgresql",
    "provides": {
       "<%= extension_name %>": {
-         "abstract": "<%= short_description %>",
+         "abstract": "<%= abstract %>",
          "file": "sql/<%= extension_name %>.sql",
          "docfile": "doc/<%= extension_name %>.md",
          "version": "1.0.0"
       }
    },
-   "generated_by": "<%= author_name %>",
+   "generated_by": "<%= maintainer %>",
+   <% if tags %>
+     "tags": [ <%= tags.collect { |t| %Q|"#{t}"| }.join(",") %> ],
+   <% end %>
    "meta-spec": {
       "version": "1.0.0",
       "url": "http://pgxn.org/meta/spec.txt"
    }
-   <% unless tags.nil? || tags.empty? %>
-     , "tags": [ <%= tags.collect { |t| %Q|"#{t}"| }.join(",") %> ]
-   <% end %>
 }
