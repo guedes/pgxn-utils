@@ -1,7 +1,7 @@
 module PgxnUtils
   class CLI < Thor
     attr_accessor :extension_name, :target, :maintainer, :maintainer_mail
-    attr_accessor :abstract, :description, :tags
+    attr_accessor :abstract, :description, :version, :tags
     attr_accessor :license, :release_status, :generated_by
 
     include Thor::Actions
@@ -19,7 +19,7 @@ module PgxnUtils
 
     # META optional fields
     method_option :description,       :aliases => "-d", :type => :string,  :default => "A long description",     :desc => "A long text that contains more information about extension"
-    method_option :generated_by,      :aliases => "-b", :type => :string,  :default => "Generator's name",       :desc => "Name of extension's generator"
+    method_option :generated_by,      :aliases => "-b", :type => :string,                                        :desc => "Name of extension's generator"
     method_option :tags,              :aliases => "-t", :type => :array,                                         :desc => "Defines extension's tags"
     method_option :release_status,    :aliases => "-r", :type => :string,  :default => "unstable",               :desc => "Initial extension's release status"
 

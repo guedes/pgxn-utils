@@ -31,17 +31,21 @@ describe PgxnUtils::CLI do
       expected_abstract = "Short description"
       expected_description = "Very Long description for my cool extension"
       expected_tags = "one two tree"
+      expected_version = "1.0.0"
 
-      skeleton expected_extension, "-p /tmp -m #{expected_name} -e #{expected_mail} -t #{expected_tags} -a '#{expected_abstract}' -d '#{expected_description}'"
+      skeleton expected_extension, "-p /tmp -m #{expected_name} -e #{expected_mail} -t #{expected_tags} -a '#{expected_abstract}' -d '#{expected_description}' -v #{expected_version}"
 
       meta = File.read("/tmp/#{expected_extension}/META.json")
       meta.should match(/"name": "#{expected_extension}"/)
       meta.should match(/"abstract": "#{expected_abstract}"/)
       meta.should match(/"description": "#{expected_description}"/)
+      meta.should match(/"version": "#{expected_version}"/)
+      meta.should match(/"license": "postgresql"/)
+      meta.should match(/"release_status": "unstable"/)
       meta.should match(/"#{expected_name} <#{expected_mail}>"/)
       meta.should match(/"file": "sql\/#{expected_extension}.sql"/)
       meta.should match(/"docfile": "doc\/#{expected_extension}.md"/)
-      meta.should match(/"generated_by": "#{expected_name}"/)
+      meta.should_not match(/"generated_by":/)
       meta.should match(/"tags": \[ "one","two","tree" \],/)
 
       makefile = File.read("/tmp/#{expected_extension}/Makefile")
