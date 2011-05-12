@@ -1,12 +1,14 @@
 pgxn utils
 ==========
 
-This branchs stays here for historical purpouse.
+This branch stays here for historical purpouse.
 
 This script is the first draft proposal to create a tool
 that helps PostgreSQL developers to focus on problem that
 they wants to solve, than in the all structure and files
 and control files need to PGXS to build the extension.
+
+Please see the 'master' branch!
 
 For more details see this thread:
 
