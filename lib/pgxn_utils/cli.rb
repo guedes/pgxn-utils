@@ -2,6 +2,7 @@ module PgxnUtils
   class CLI < Thor
     attr_accessor :extension_name, :target, :maintainer, :maintainer_mail
     attr_accessor :abstract, :description, :tags
+    attr_accessor :license, :release_status, :generated_by
 
     include Thor::Actions
 
@@ -17,7 +18,7 @@ module PgxnUtils
     method_option :version,           :aliases => "-v", :type => :string,   :default => "0.0.1",                 :desc => "Initial version"
 
     # META optional fields
-    method_option :description,       :aliases => "-d", :type => :string,  :default => "A long description",     :desc => "A long text that contains more information aboute extension"
+    method_option :description,       :aliases => "-d", :type => :string,  :default => "A long description",     :desc => "A long text that contains more information about extension"
     method_option :generated_by,      :aliases => "-b", :type => :string,  :default => "Generator's name",       :desc => "Name of extension's generator"
     method_option :tags,              :aliases => "-t", :type => :array,                                         :desc => "Defines extension's tags"
     method_option :release_status,    :aliases => "-r", :type => :string,  :default => "unstable",               :desc => "Initial extension's release status"
@@ -35,9 +36,14 @@ module PgxnUtils
         self.target = options[:target]
         self.maintainer = options[:maintainer]
         self.maintainer_mail = options[:maintainer_mail]
-        self.tags = options[:tags]
         self.abstract = options[:abstract]
+        self.license = options[:license]
+        self.version = options[:version]
+
         self.description = options[:description]
+        self.generated_by = options[:generated_by]
+        self.tags = options[:tags]
+        self.release_status = options[:release_status]
 
         self.destination_root = target
       end
