@@ -1,5 +1,5 @@
 # <%= extension_name %> extension
 comment = '<%= abstract %>'
-default_version = '1.0.0'
-module_pathname = '/<%= extension_name %>'
+default_version = '<%= version %>'
+module_pathname = '$libdir/<%= extension_name %>'
 relocatable = true
