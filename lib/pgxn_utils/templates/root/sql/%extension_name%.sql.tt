@@ -1,5 +1,5 @@
 /*
- * Author: <%= maintainer %> <<%= maintainer_mail %>>
+ * Author: <%= maintainer %>
  * Created at: <%= Time.now %>
  *
  */ 
