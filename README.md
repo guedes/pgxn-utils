@@ -16,24 +16,17 @@ How to install it?
 How it works?
 -------------
 
-    $ pgxn_utils help skeleton
-    Usage:
-      pgxn_utils skeleton extension_name
+It is all about tasks. Let's see what jobs we have:
 
-    Options:
-      -p, [--target=TARGET]                    # Define the target directory
-                                               # Default: .
-      -m, [--maintainer=MAINTAINER]            # Maintainer's name
-      -e, [--maintainer-mail=MAINTAINER_MAIL]  # Maintainer's mail
-      -a, [--abstract=ABSTRACT]                # Defines a short description to abstract
-      -l, [--license=LICENSE]                  # The extension license.
-      -v, [--version=VERSION]                  # Initial version
-      -d, [--description=DESCRIPTION]          # A long text that contains more information about extension
-      -b, [--generated-by=GENERATED_BY]        # Name of extension's generator
-      -t, [--tags=one two three]               # Defines extension's tags
-      -r, [--release-status=RELEASE_STATUS]    # Initial extension's release status
+    $ pgxn_utils help
+    Tasks:
+      pgxn_utils bundle [extension_name]  # Bundles an extension
+      pgxn_utils change [extension_name]  # Change META's attributes in current extension
+      pgxn_utils help [TASK]              # Describe available tasks or one specific task
+      pgxn_utils skeleton extension_name  # Creates an extension skeleton in current directory
 
-See in action...
+
+# Creating a new extension
 
     $ pgxn_utils skeleton my_cool_extension
           create  my_cool_extension
@@ -47,7 +40,83 @@ See in action...
           create  my_cool_extension/test/expected/base.out
           create  my_cool_extension/test/sql/base.sql
 
-Thats it! Start coding! ":)
+Thats it! Just start coding! ":)
+
+# Changing something
+
+Well suppose you want to change the default maintainer's name and the license, well just do:
+
+    $ pgxn_utils change my_cool_extension --maintainer "Dickson Guedes" --license bsd
+           exist  my_cool_extension
+       identical  my_cool_extension/my_cool_extension.control
+        conflict  my_cool_extension/META.json
+    Overwrite /home/guedes/extensions/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh] d
+      {
+         "name": "my_cool_extension",
+         "abstract": "A short description",
+         "description": "A long description",
+         "version": "0.0.1",
+    -    "maintainer": "The maintainer's name",
+    +    "maintainer": "Dickson Guedes",
+    -    "license": "postgresql",
+    +    "license": "bsd",
+         "provides": {
+            "my_cool_extension": {
+               "abstract": "A short description",
+               "file": "sql/my_cool_extension.sql",
+               "docfile": "doc/my_cool_extension.md",
+               "version": "0.0.1"
+            }
+         },
+         "release_status": "unstable",
+      
+         "generated_by": "The maintainer's name",
+      
+      
+         "meta-spec": {
+            "version": "1.0.0",
+            "url": "http://pgxn.org/meta/spec.txt"
+         }
+      }
+    Retrying...
+    Overwrite /home/guedes/extensions/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh]
+           force  my_cool_extension/META.json
+       identical  my_cool_extension/Makefile
+    ...
+    ...
+    ...
+
+It will wait you decide what to do.
+
+For all switches that you can use with *change*, type:
+
+    $ pgxn_utils help change
+    Usage:
+      pgxn_utils change [extension_name]
+
+    Options:
+      -m, [--maintainer=MAINTAINER]          # Maintainer's name <maintainer@email>
+      -a, [--abstract=ABSTRACT]              # Defines a short description to abstract
+      -l, [--license=LICENSE]                # The extension license.
+      -v, [--version=VERSION]                # Initial version
+      -d, [--description=DESCRIPTION]        # A long text that contains more information about extension
+      -b, [--generated-by=GENERATED_BY]      # Name of extension's generator
+      -t, [--tags=one two three]             # Defines extension's tags
+      -r, [--release-status=RELEASE_STATUS]  # Initial extension's release status
+
+
+# Bundle it!
+
+Well, since you finished your work you can bundle it to send to [PGXN](http://pgxn.org).
+
+Just type:
+
+    $ pgxn_utils bundle my_cool_extension
+    Extension generated at: /home/guedes/extensions/my_cool_extension-0.0.1.zip
+
+# Working in progress
+
+I'm working in an option to release the bundled extension, sending it to [PGXN](http://pgxn.org).
 
 Copyright and License
 ---------------------
