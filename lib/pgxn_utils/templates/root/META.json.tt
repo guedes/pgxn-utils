@@ -3,7 +3,7 @@
    "abstract": "<%= abstract %>",
    "description": "<%= description %>",
    "version": "<%= version %>",
-   "maintainer": "<%= maintainer %> <<%= maintainer_mail %>>",
+   "maintainer": "<%= maintainer %>",
    "license": "<%= license %>",
    "provides": {
       "<%= extension_name %>": {

@@ -24,21 +24,14 @@ How it works?
       -p, [--target=TARGET]                    # Define the target directory
                                                # Default: .
       -m, [--maintainer=MAINTAINER]            # Maintainer's name
-                                               # Default: The maintainer's name
       -e, [--maintainer-mail=MAINTAINER_MAIL]  # Maintainer's mail
-                                               # Default: maintainer@email.here
       -a, [--abstract=ABSTRACT]                # Defines a short description to abstract
-                                               # Default: A short description
       -l, [--license=LICENSE]                  # The extension license.
-                                               # Default: postgresql
       -v, [--version=VERSION]                  # Initial version
-                                               # Default: 0.0.1
       -d, [--description=DESCRIPTION]          # A long text that contains more information about extension
-                                               # Default: A long description
       -b, [--generated-by=GENERATED_BY]        # Name of extension's generator
       -t, [--tags=one two three]               # Defines extension's tags
       -r, [--release-status=RELEASE_STATUS]    # Initial extension's release status
-                                               # Default: unstable
 
 See in action...
 

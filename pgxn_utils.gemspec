@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Dickson S. Guedes"]
   s.email       = ["guedes@guedesoft.net"]
   s.homepage    = "http://github.com/guedes/pgxn-utils"
-  s.summary     = %q{A PGXN set of tools to developers}
+  s.summary     = %q{A PGXN set of tools to PostgreSQL extension's developers}
   s.description = %q{A PGXN set of tools to help developers create and publish your PostgreSQL extensions without pain}
 
   s.rubyforge_project = "pgxn_utils"
