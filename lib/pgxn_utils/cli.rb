@@ -71,7 +71,7 @@ module PgxnUtils
         if can_zip?(archive)
           Zippy.create(archive) do |zip|
             Dir["#{path}/**/**"].each do |file|
-              zip["#{extension_name}-#{config_options['version']}/#{file}"] = File.open(file) unless File.directory?(file)
+              zip["#{extension_name}-#{config_options['version']}/#{file.sub(path+'/','')}"] = File.open(file) unless File.directory?(file)
             end
           end
           say "Extension generated at: #{archive}"
