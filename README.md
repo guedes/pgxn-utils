@@ -1,10 +1,10 @@
 pgxn utils
 ==========
 
-What is?
+What is it?
 --------
 
-This is a set of task that aims to help PostgreSQL developers to focus more on the problem that they wants to solve than in the all structure and files and control files need to PGXS to build the extension.
+It aims to be a set of task that aims to help PostgreSQL extension's developers to focus more on the problem that they wants to solve than in the all structure and files and control files need to PGXS to build the extension.
 
 It's a WIP but very functional. Please use it and help me improve it.
 
