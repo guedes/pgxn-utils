@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
 
   # dev
   s.add_development_dependency "rspec"
+  s.add_development_dependency "simplecov", ">= 0.4.0"
 
   # prod
   if s.respond_to? :specification_version then
@@ -29,10 +30,16 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<thor>, ["~> 0.14"])
+      s.add_runtime_dependency(%q<rubyzip>, ["~> 0.9.4"])
+      s.add_runtime_dependency(%q<zippy>, ["~> 0.1.0"])
     else
       s.add_dependency(%q<thor>, ["~> 0.14"])
+      s.add_runtime_dependency(%q<rubyzip>, ["~> 0.9.4"])
+      s.add_runtime_dependency(%q<zippy>, ["~> 0.1.0"])
     end
   else
     s.add_dependency(%q<thor>, ["~> 0.14"])
+    s.add_runtime_dependency(%q<rubyzip>, ["~> 0.9.4"])
+    s.add_runtime_dependency(%q<zippy>, ["~> 0.1.0"])
   end
 end
