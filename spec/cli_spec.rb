@@ -7,7 +7,7 @@ describe PgxnUtils::CLI do
     system "rm -rf extension.*"
   end
 
-  context "create skeleton" do
+  context "#skeleton" do
     before(:each) do
       @cli = PgxnUtils::CLI.new
     end
@@ -83,12 +83,16 @@ describe PgxnUtils::CLI do
     it "should generates a git repo"
   end
 
-  context "bundle" do
+  context "#change" do
+    it "should change things"
+  end
+
+  context "#bundle" do
     it "should bundle to zip by default"
     it "should create the name in semver spec"
   end
 
-  context "release" do
+  context "#release" do
     it "should send the bundle to PGXN"
   end
 

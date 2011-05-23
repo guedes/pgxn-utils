@@ -2,6 +2,8 @@ $:.unshift File.expand_path('..', __FILE__)
 $:.unshift File.expand_path('../../lib', __FILE__)
 
 require 'rspec'
+require 'simplecov'
+SimpleCov.start
 require 'pgxn_utils'
 
 $counter = 0
@@ -18,6 +20,10 @@ def next_extension
 end
 
 def skeleton(extension_name, args=nil)
+  run_pgxn_utils(:skeleton, "#{extension_name} #{args}")
+end
+
+def change(extension_name, args=nil)
   run_pgxn_utils(:skeleton, "#{extension_name} #{args}")
 end
 
