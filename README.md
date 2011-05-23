@@ -16,7 +16,7 @@ How to install it?
 How it works?
 -------------
 
-It is all about tasks. Let's see what jobs we have:
+It is all about tasks. Let's see what tasks we have:
 
     $ pgxn_utils help
     Tasks:
