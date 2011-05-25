@@ -25,12 +25,19 @@ module PgxnUtils
 
     def skeleton(extension_name,target=nil)
       self.target = options[:target] || target || "."
-      self.set_accessors extension_name
 
-      directory "root", extension_name
+      if is_extension?("#{self.target}/#{extension_name}")
+        say "'#{extension_name}' already exists. Please, use 'change' instead 'skeleton'."
+      else
+        self.set_accessors extension_name
+
+        directory "root", extension_name
+      end
     end
 
     desc "change [extension_name]", "Change META's attributes in current extension."
+
+    method_option :target,            :aliases => "-p", :type => :string, :default => ".", :desc => "Define the target directory"
 
     # META required fields
     method_option :maintainer,        :aliases => "-m", :type => :string, :desc => "Maintainer's name <maintainer@email>"
@@ -46,12 +53,21 @@ module PgxnUtils
     method_option :release_status,    :aliases => "-r", :type => :string, :desc => "Initial extension's release status"
 
     def change(extension_name=".")
-      path = File.expand_path(extension_name)
+      puts "chamando resolve"
+      extension_path, discard = resolve_extension_path_and_name(extension_name)
+      puts extension_path
+      self.target = options[:target]
+      self.extension_name = extension_name
 
-      target = File.expand_path('..', path)
-      extension_name = File.basename(path)
-
-      skeleton(extension_name, target)
+      set_accessors(extension_name)
+      puts "iniciando"
+      
+      if is_extension?(extension_path)
+        template "root/META.json.tt", "#{extension_path}/META.json"
+        template "root/%extension_name%.control.tt", "#{extension_path}/%extension_name%.control"
+      else
+        say "'#{extension_name}' isn't a extension"
+      end
     end
 
     desc "bundle [extension_name]", "Bundles an extension."
@@ -80,6 +96,24 @@ module PgxnUtils
     end
 
     no_tasks do
+      def resolve_extension_path_and_name(extension_name)
+        raise ArgumentError, "#{extension_name} isn't"
+        target = options[:target]
+        extension_path = "."
+
+        if target != "." && extension_name == "."
+          raise ArgumentError, "Please, supply a extension name"
+        elsif target == "."
+          extension_path = File.expand_path(extension_name)
+          extension_name = File.basename(extension_path)
+        else 
+          extension_path = "#{target}/#{extension_name}"
+        end
+        puts ">>>> #{extension_path}"
+        #puts extension_name
+        [ extension_path, extension_name ]
+      end
+
       def can_zip?(archive)
         can_zip = false
 
@@ -99,10 +133,8 @@ module PgxnUtils
       end
 
       def config_options
-        file = ""
-        file = File.join(file, self.target) if self.target != "."
-        file = File.join(file, self.extension_name) if self.extension_name
-        file = File.join(file, "META.json")
+        extension_path, extension_name = resolve_extension_path_and_name(self.extension_name)
+        file = File.join(extension_path, "META.json")
 
         if File.exist?(file)
           @@config_options ||= JSON.load(File.read(file))
