@@ -12,4 +12,10 @@ RSpec::Core::RakeTask.new do |t|
   #t.ruby_opts  = %w(-w)
 end
 
+desc "CTag Files"
+task :ctag do
+  #system("ctags -R --exclude=.git --exclude=log * ~/.rvm/gems/")
+  system("ctags -R --exclude=.git --exclude=log *")
+end
+
 task :default => :spec
