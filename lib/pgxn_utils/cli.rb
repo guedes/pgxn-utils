@@ -3,8 +3,10 @@ module PgxnUtils
     attr_accessor :extension_name, :target, :maintainer #, :maintainer_mail
     attr_accessor :abstract, :description, :version, :tags
     attr_accessor :license, :release_status, :generated_by
+    attr_accessor :pgxn_username, :pgxn_password
 
     include Thor::Actions
+    include PgxnUtils::Constants
 
     desc "skeleton extension_name", "Creates an extension skeleton in current directory."
 
@@ -84,18 +86,79 @@ module PgxnUtils
         ext = "zip"
         archive = "#{archive_name}.#{ext}"
 
+        puts path
         if can_zip?(archive)
+          make_dist_clean(path)
+
           Zippy.create(archive) do |zip|
             Dir["#{path}/**/**"].each do |file|
               zip["#{extension_name}-#{config_options['version']}/#{file.sub(path+'/','')}"] = File.open(file) unless File.directory?(file)
             end
           end
-          say "Extension generated at: #{archive}"
+          say_status :create, archive, :green
         end
       end
     end
 
+    desc "release filename", "Release a extension"
+    def release(filename)
+      send_file_to_pgxn(filename)
+    end
+
     no_tasks do
+      def make_dist_clean(path)
+        inside path do
+          run 'make distclean', :capture => true
+        end
+      end
+
+      def ask_for_pgxn_credential
+        self.pgxn_username = ENV["PGXN_USER"] || HighLine.ask("Enter your PGXN username: ") { |q| q.validate = /^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$/ }
+        self.pgxn_password = ENV["PGXN_PASS"] || HighLine.ask("Enter your PGXN password: ") { |q| q.echo =  '*' }
+      end
+
+      def check_response(response)
+        case response
+        when Net::HTTPUnauthorized then 
+          say "oops!", :red
+          say "It seems that you entered a wrong username or password.", :red
+        when Net::HTTPConflict then
+          say "conflict!", :yellow
+          say "Distribution already exists! Please, check your META.json.", :yellow
+        when Net::HTTPSeeOther then
+          say "released successfully!", :green
+          say "Visit: #{URI.parse(response['Location'])}", :green
+        else
+          say "Unknown error. (#{response})"
+        end
+      end
+
+      def prepare_multipart_post_for(filename)
+        file_basename = File.basename(filename)
+        zip_file = File.open(filename)
+        Net::HTTP::Post::Multipart.new(
+          UPLOAD_URL.path,
+          "archive" => UploadIO.new(zip_file, "application/zip", file_basename),
+          "Expect" => ""
+        )
+      end
+
+      def try_send_file(request, filename)
+        Net::HTTP.start(UPLOAD_URL.host, UPLOAD_URL.port) do |http|
+          say "Trying to release #{File.basename(filename)} ... "
+          http.request(request)
+        end
+      end
+
+      def send_file_to_pgxn(filename)
+        request = prepare_multipart_post_for(filename)
+        ask_for_pgxn_credential
+
+        request.basic_auth pgxn_username, pgxn_password
+        response = try_send_file(request, filename)
+        check_response(response)
+      end
+
       def resolve_extension_path_and_name(extension_name)
         target = options[:target]
         extension_path = "."
@@ -115,7 +178,8 @@ module PgxnUtils
         can_zip = false
 
         if File.exists?(archive)
-          if yes? "#{archive} found! Overwrite? [yN]"
+          say_status :conflict, archive, :red
+          if yes? "Overwrite #{archive}? [yN]"
             can_zip = true
           else
             can_zip = false
