@@ -32,6 +32,8 @@ module PgxnUtils
         raise ArgumentError, "'#{extension_name}' already exists. Please, use 'change' instead 'skeleton'."
       elsif is_extension?(".")
         raise ArgumentError, "You are inside a extension directory, already. Consider use 'change' instead."
+      elsif is_dir?("#{self.target}/#{extension_name}")
+        raise ArgumentError, "Can't create an extension overwriting an existing directory."
       else
         self.set_accessors extension_name
 
@@ -86,7 +88,6 @@ module PgxnUtils
         ext = "zip"
         archive = "#{archive_name}.#{ext}"
 
-        puts path
         if can_zip?(archive)
           make_dist_clean(path)
 
@@ -144,9 +145,14 @@ module PgxnUtils
       end
 
       def try_send_file(request, filename)
-        Net::HTTP.start(UPLOAD_URL.host, UPLOAD_URL.port) do |http|
-          say "Trying to release #{File.basename(filename)} ... "
-          http.request(request)
+        begin
+          Net::HTTP.start(UPLOAD_URL.host, UPLOAD_URL.port) do |http|
+            say "Trying to release #{File.basename(filename)} ... "
+            http.request(request)
+          end
+        rescue SocketError
+          say "Please, check your connection.", :red
+          exit(1)
         end
       end
 
@@ -191,6 +197,10 @@ module PgxnUtils
 
       def is_extension?(dir=".")
         File.directory?(dir) && File.exists?("#{dir}/META.json")
+      end
+
+      def is_dir?(dir)
+        File.directory?(dir)
       end
 
       def config_options
