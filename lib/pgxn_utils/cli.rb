@@ -14,7 +14,6 @@ module PgxnUtils
 
     # META required fields
     method_option :maintainer,        :aliases => "-m", :type => :string, :desc => "Maintainer's name <maintainer@email>"
-    #method_option :maintainer_mail,   :aliases => "-e", :type => :string, :desc => "Maintainer's mail"
     method_option :abstract,          :aliases => "-a", :type => :string, :desc => "Defines a short description to abstract"
     method_option :license,           :aliases => "-l", :type => :string, :desc => "The extension license."
     method_option :version,           :aliases => "-v", :type => :string, :desc => "Initial version"
@@ -29,11 +28,11 @@ module PgxnUtils
       self.target = options[:target] || target || "."
 
       if is_extension?("#{self.target}/#{extension_name}")
-        raise ArgumentError, "'#{extension_name}' already exists. Please, use 'change' instead 'skeleton'."
+        say "'#{extension_name}' already exists. Please, use 'change' instead 'skeleton'.", :red
       elsif is_extension?(".")
-        raise ArgumentError, "You are inside a extension directory, already. Consider use 'change' instead."
+        say "You are inside a extension directory, already. Consider use 'change' instead.", :red
       elsif is_dir?("#{self.target}/#{extension_name}")
-        raise ArgumentError, "Can't create an extension overwriting an existing directory."
+        say "Can't create an extension overwriting an existing directory.", :red
       else
         self.set_accessors extension_name
 
@@ -47,7 +46,6 @@ module PgxnUtils
 
     # META required fields
     method_option :maintainer,        :aliases => "-m", :type => :string, :desc => "Maintainer's name <maintainer@email>"
-    #method_option :maintainer_mail,   :aliases => "-e", :type => :string, :desc => "Maintainer's mail"
     method_option :abstract,          :aliases => "-a", :type => :string, :desc => "Defines a short description to abstract"
     method_option :license,           :aliases => "-l", :type => :string, :desc => "The extension license."
     method_option :version,           :aliases => "-v", :type => :string, :desc => "Initial version"
@@ -70,7 +68,7 @@ module PgxnUtils
         template "root/META.json.tt", "#{extension_path}/META.json"
         template "root/%extension_name%.control.tt", "#{extension_path}/%extension_name%.control"
       else
-        raise ArgumentError, "'#{extension_name}' doesn't appears to be an extension. Please, supply the extension's name"
+        say "'#{extension_name}' doesn't appears to be an extension. Please, supply the extension's name", :red
       end
     end
 
@@ -78,7 +76,7 @@ module PgxnUtils
 
     def bundle(extension_name=".")
       unless is_extension?(extension_name)
-        raise ArgumentError, "'#{extension_name}' doesn't appears to be an extension. Please, supply the extension's name"
+        say "'#{extension_name}' doesn't appears to be an extension. Please, supply the extension's name", :red
       else
         path = File.expand_path(extension_name)
         extension_name = File.basename(path)
@@ -102,6 +100,7 @@ module PgxnUtils
     end
 
     desc "release filename", "Release a extension"
+
     def release(filename)
       send_file_to_pgxn(filename)
     end
@@ -120,7 +119,7 @@ module PgxnUtils
 
       def check_response(response)
         case response
-        when Net::HTTPUnauthorized then 
+        when Net::HTTPUnauthorized then
           say "oops!", :red
           say "It seems that you entered a wrong username or password.", :red
         when Net::HTTPConflict then
@@ -217,7 +216,6 @@ module PgxnUtils
         self.extension_name = extension_name
 
         self.maintainer      = options[:maintainer]      || config_options["maintainer"]      || "The maintainer's name"
-        #self.maintainer_mail = options[:maintainer_mail] || config_options["maintainer_mail"] || "maintainer@email.here"
         self.abstract        = options[:abstract]        || config_options["abstract"]        || "A short description"
         self.license         = options[:license]         || config_options["license"]         || "postgresql"
         self.version         = options[:version]         || config_options["version"]         || "0.0.1"

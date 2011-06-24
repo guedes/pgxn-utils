@@ -109,14 +109,16 @@ For all switches that you can use with *change*, type:
 
 Well, since you finished your work you can bundle it to send to [PGXN](http://pgxn.org).
 
-Just type:
+Bundle it:
 
     $ pgxn_utils bundle my_cool_extension
     Extension generated at: /home/guedes/extensions/my_cool_extension-0.0.1.zip
 
-    $ ../pgxn-utils/bin/pgxn_utils release overpaid-0.0.6b3.zip 
+and release it:
+
+    $ pgxn_utils release my_cool_extension-0.0.1.zip
     Enter your PGXN username: guedes
-    Enter your PGXN password: **************
+    Enter your PGXN password: ******
     Trying to release my_cool_extension-0.0.1.zip ... released successfully!
     Visit: http://manager.pgxn.org/distributions/my_cool_extension/0.0.1
 
