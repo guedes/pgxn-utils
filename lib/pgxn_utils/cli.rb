@@ -3,8 +3,10 @@ module PgxnUtils
     attr_accessor :extension_name, :target, :maintainer #, :maintainer_mail
     attr_accessor :abstract, :description, :version, :tags
     attr_accessor :license, :release_status, :generated_by
+    attr_accessor :pgxn_username, :pgxn_password
 
     include Thor::Actions
+    include PgxnUtils::Constants
 
     desc "skeleton extension_name", "Creates an extension skeleton in current directory."
 
@@ -12,7 +14,6 @@ module PgxnUtils
 
     # META required fields
     method_option :maintainer,        :aliases => "-m", :type => :string, :desc => "Maintainer's name <maintainer@email>"
-    #method_option :maintainer_mail,   :aliases => "-e", :type => :string, :desc => "Maintainer's mail"
     method_option :abstract,          :aliases => "-a", :type => :string, :desc => "Defines a short description to abstract"
     method_option :license,           :aliases => "-l", :type => :string, :desc => "The extension license."
     method_option :version,           :aliases => "-v", :type => :string, :desc => "Initial version"
@@ -25,16 +26,26 @@ module PgxnUtils
 
     def skeleton(extension_name,target=nil)
       self.target = options[:target] || target || "."
-      self.set_accessors extension_name
 
-      directory "root", extension_name
+      if is_extension?("#{self.target}/#{extension_name}")
+        say "'#{extension_name}' already exists. Please, use 'change' instead 'skeleton'.", :red
+      elsif is_extension?(".")
+        say "You are inside a extension directory, already. Consider use 'change' instead.", :red
+      elsif is_dir?("#{self.target}/#{extension_name}")
+        say "Can't create an extension overwriting an existing directory.", :red
+      else
+        self.set_accessors extension_name
+
+        directory "root", extension_name
+      end
     end
 
     desc "change [extension_name]", "Change META's attributes in current extension."
 
+    method_option :target,            :aliases => "-p", :type => :string, :default => ".", :desc => "Define the target directory"
+
     # META required fields
     method_option :maintainer,        :aliases => "-m", :type => :string, :desc => "Maintainer's name <maintainer@email>"
-    #method_option :maintainer_mail,   :aliases => "-e", :type => :string, :desc => "Maintainer's mail"
     method_option :abstract,          :aliases => "-a", :type => :string, :desc => "Defines a short description to abstract"
     method_option :license,           :aliases => "-l", :type => :string, :desc => "The extension license."
     method_option :version,           :aliases => "-v", :type => :string, :desc => "Initial version"
@@ -46,19 +57,26 @@ module PgxnUtils
     method_option :release_status,    :aliases => "-r", :type => :string, :desc => "Initial extension's release status"
 
     def change(extension_name=".")
-      path = File.expand_path(extension_name)
+      extension_path, extension_name = resolve_extension_path_and_name(extension_name)
 
-      target = File.expand_path('..', path)
-      extension_name = File.basename(path)
+      self.target = extension_path
+      self.extension_name = extension_name
 
-      skeleton(extension_name, target)
+      set_accessors(extension_name)
+
+      if is_extension?(extension_path)
+        template "root/META.json.tt", "#{extension_path}/META.json"
+        template "root/%extension_name%.control.tt", "#{extension_path}/%extension_name%.control"
+      else
+        say "'#{extension_name}' doesn't appears to be an extension. Please, supply the extension's name", :red
+      end
     end
 
     desc "bundle [extension_name]", "Bundles an extension."
 
     def bundle(extension_name=".")
       unless is_extension?(extension_name)
-        say "'#{extension_name}' isn't a valid extension"
+        say "'#{extension_name}' doesn't appears to be an extension. Please, supply the extension's name", :red
       else
         path = File.expand_path(extension_name)
         extension_name = File.basename(path)
@@ -69,22 +87,104 @@ module PgxnUtils
         archive = "#{archive_name}.#{ext}"
 
         if can_zip?(archive)
+          make_dist_clean(path)
+
           Zippy.create(archive) do |zip|
             Dir["#{path}/**/**"].each do |file|
               zip["#{extension_name}-#{config_options['version']}/#{file.sub(path+'/','')}"] = File.open(file) unless File.directory?(file)
             end
           end
-          say "Extension generated at: #{archive}"
+          say_status :create, archive, :green
         end
       end
     end
 
+    desc "release filename", "Release a extension"
+
+    def release(filename)
+      send_file_to_pgxn(filename)
+    end
+
     no_tasks do
+      def make_dist_clean(path)
+        inside path do
+          run 'make distclean', :capture => true
+        end
+      end
+
+      def ask_for_pgxn_credential
+        self.pgxn_username = ENV["PGXN_USER"] || HighLine.ask("Enter your PGXN username: ") { |q| q.validate = /^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$/ }
+        self.pgxn_password = ENV["PGXN_PASS"] || HighLine.ask("Enter your PGXN password: ") { |q| q.echo =  '*' }
+      end
+
+      def check_response(response)
+        case response
+        when Net::HTTPUnauthorized then
+          say "oops!", :red
+          say "It seems that you entered a wrong username or password.", :red
+        when Net::HTTPConflict then
+          say "conflict!", :yellow
+          say "Distribution already exists! Please, check your META.json.", :yellow
+        when Net::HTTPSeeOther then
+          say "released successfully!", :green
+          say "Visit: #{URI.parse(response['Location'])}", :green
+        else
+          say "Unknown error. (#{response})"
+        end
+      end
+
+      def prepare_multipart_post_for(filename)
+        file_basename = File.basename(filename)
+        zip_file = File.open(filename)
+        Net::HTTP::Post::Multipart.new(
+          UPLOAD_URL.path,
+          "archive" => UploadIO.new(zip_file, "application/zip", file_basename),
+          "Expect" => ""
+        )
+      end
+
+      def try_send_file(request, filename)
+        begin
+          Net::HTTP.start(UPLOAD_URL.host, UPLOAD_URL.port) do |http|
+            say "Trying to release #{File.basename(filename)} ... "
+            http.request(request)
+          end
+        rescue SocketError
+          say "Please, check your connection.", :red
+          exit(1)
+        end
+      end
+
+      def send_file_to_pgxn(filename)
+        request = prepare_multipart_post_for(filename)
+        ask_for_pgxn_credential
+
+        request.basic_auth pgxn_username, pgxn_password
+        response = try_send_file(request, filename)
+        check_response(response)
+      end
+
+      def resolve_extension_path_and_name(extension_name)
+        target = options[:target]
+        extension_path = "."
+
+        if target != "." && extension_name == "."
+          raise ArgumentError, "Please, supply a extension name"
+        elsif target == "."
+          extension_path = File.expand_path(extension_name)
+          extension_name = File.basename(extension_path)
+        else
+          extension_path = "#{target}/#{extension_name}"
+        end
+        [ extension_path, extension_name ]
+      end
+
       def can_zip?(archive)
         can_zip = false
 
         if File.exists?(archive)
-          if yes? "#{archive} found! Overwrite? [yN]"
+          say_status :conflict, archive, :red
+          if yes? "Overwrite #{archive}? [yN]"
             can_zip = true
           else
             can_zip = false
@@ -98,11 +198,12 @@ module PgxnUtils
         File.directory?(dir) && File.exists?("#{dir}/META.json")
       end
 
+      def is_dir?(dir)
+        File.directory?(dir)
+      end
+
       def config_options
-        file = ""
-        file = File.join(file, self.target) if self.target != "."
-        file = File.join(file, self.extension_name) if self.extension_name
-        file = File.join(file, "META.json")
+        file = File.join(target, "META.json")
 
         if File.exist?(file)
           @@config_options ||= JSON.load(File.read(file))
@@ -115,7 +216,6 @@ module PgxnUtils
         self.extension_name = extension_name
 
         self.maintainer      = options[:maintainer]      || config_options["maintainer"]      || "The maintainer's name"
-        #self.maintainer_mail = options[:maintainer_mail] || config_options["maintainer_mail"] || "maintainer@email.here"
         self.abstract        = options[:abstract]        || config_options["abstract"]        || "A short description"
         self.license         = options[:license]         || config_options["license"]         || "postgresql"
         self.version         = options[:version]         || config_options["version"]         || "0.0.1"

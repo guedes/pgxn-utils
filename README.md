@@ -105,18 +105,30 @@ For all switches that you can use with *change*, type:
       -r, [--release-status=RELEASE_STATUS]  # Initial extension's release status
 
 
-# Bundle it!
+# Bundling and Releasing!
 
 Well, since you finished your work you can bundle it to send to [PGXN](http://pgxn.org).
 
-Just type:
+Bundle it:
 
     $ pgxn_utils bundle my_cool_extension
     Extension generated at: /home/guedes/extensions/my_cool_extension-0.0.1.zip
 
+and release it:
+
+    $ pgxn_utils release my_cool_extension-0.0.1.zip
+    Enter your PGXN username: guedes
+    Enter your PGXN password: ******
+    Trying to release my_cool_extension-0.0.1.zip ... released successfully!
+    Visit: http://manager.pgxn.org/distributions/my_cool_extension/0.0.1
+
+You can export `PGXN_USER` and `PGXN_PASSWORD` environment variables to avoid
+type username and password everytime.
+
 # Working in progress
 
-I'm working in an option to release the bundled extension, sending it to [PGXN](http://pgxn.org).
+* support to [git](http://git-scm.org)
+* support to proxy
 
 Copyright and License
 ---------------------
