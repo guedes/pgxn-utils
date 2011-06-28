@@ -145,7 +145,7 @@ module PgxnUtils
 
       def try_send_file(request, filename)
         begin
-          Net::HTTP.start(UPLOAD_URL.host, UPLOAD_URL.port) do |http|
+          Net::HTTP.start(UPLOAD_URL.host, UPLOAD_URL.port, { :use_ssl => true , :verify_mode => OpenSSL::SSL::VERIFY_NONE }) do |http|
             say "Trying to release #{File.basename(filename)} ... "
             http.request(request)
           end
