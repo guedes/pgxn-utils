@@ -4,9 +4,7 @@ pgxn utils
 What is it?
 --------
 
-It aims to be a set of task that aims to help PostgreSQL extension's developers to focus more on the problem that they wants to solve than in the all structure and files and control files need to PGXS to build the extension.
-
-It's a WIP but very functional. Please use it and help me improve it.
+It aims to be a set of task to help PostgreSQL extension's developers to focus more on the problem that they wants to solve than in the all structure and files and control files need to PGXS to build the extension.
 
 How to install it?
 ------------------
@@ -20,11 +18,11 @@ It is all about tasks. Let's see what tasks we have:
 
     $ pgxn_utils help
     Tasks:
-      pgxn_utils bundle [extension_name]  # Bundles an extension
-      pgxn_utils change [extension_name]  # Change META's attributes in current extension
+      pgxn_utils bundle [extension_name]  # Bundles an extension.
+      pgxn_utils change [extension_name]  # Change META's attributes in current extension.
       pgxn_utils help [TASK]              # Describe available tasks or one specific task
-      pgxn_utils skeleton extension_name  # Creates an extension skeleton in current directory
-
+      pgxn_utils release filename         # Release a extension
+      pgxn_utils skeleton extension_name  # Creates an extension skeleton in current directory.
 
 # Creating a new extension
 
@@ -47,11 +45,9 @@ Thats it! Just start coding! ":)
 Well suppose you want to change the default maintainer's name and the license, well just do:
 
     $ pgxn_utils change my_cool_extension --maintainer "Dickson Guedes" --license bsd
-           exist  my_cool_extension
-       identical  my_cool_extension/my_cool_extension.control
-        conflict  my_cool_extension/META.json
-    Overwrite /home/guedes/extensions/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh] d
-      {
+        conflict  META.json
+    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh] d
+    {
          "name": "my_cool_extension",
          "abstract": "A short description",
          "description": "A long description",
@@ -79,12 +75,9 @@ Well suppose you want to change the default maintainer's name and the license, w
          }
       }
     Retrying...
-    Overwrite /home/guedes/extensions/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh]
-           force  my_cool_extension/META.json
-       identical  my_cool_extension/Makefile
-    ...
-    ...
-    ...
+    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh] Y
+           force  META.json
+       identical  my_cool_extension.control
 
 It will wait you decide what to do.
 
@@ -93,8 +86,10 @@ For all switches that you can use with *change*, type:
     $ pgxn_utils help change
     Usage:
       pgxn_utils change [extension_name]
-
+    
     Options:
+      -p, [--target=TARGET]                  # Define the target directory
+                                             # Default: .
       -m, [--maintainer=MAINTAINER]          # Maintainer's name <maintainer@email>
       -a, [--abstract=ABSTRACT]              # Defines a short description to abstract
       -l, [--license=LICENSE]                # The extension license.
@@ -103,7 +98,8 @@ For all switches that you can use with *change*, type:
       -b, [--generated-by=GENERATED_BY]      # Name of extension's generator
       -t, [--tags=one two three]             # Defines extension's tags
       -r, [--release-status=RELEASE_STATUS]  # Initial extension's release status
-
+    
+    Change META's attributes in current extension.
 
 # Bundling and Releasing!
 
@@ -120,15 +116,16 @@ and release it:
     Enter your PGXN username: guedes
     Enter your PGXN password: ******
     Trying to release my_cool_extension-0.0.1.zip ... released successfully!
-    Visit: http://manager.pgxn.org/distributions/my_cool_extension/0.0.1
+    Visit: https://manager.pgxn.org/distributions/my_cool_extension/0.0.1
 
 You can export `PGXN_USER` and `PGXN_PASSWORD` environment variables to avoid
 type username and password everytime.
 
 # Working in progress
 
-* support to [git](http://git-scm.org)
-* support to proxy
+* [git](http://git-scm.org) support
+* proxy support
+* custom templates
 
 Copyright and License
 ---------------------
