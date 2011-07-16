@@ -8,5 +8,6 @@ require 'highline/import'
 
 module PgxnUtils
  autoload :CLI, 'pgxn_utils/cli'
+ autoload :VERSION, 'pgxn_utils/version'
  autoload :Constants, 'pgxn_utils/constants'
 end

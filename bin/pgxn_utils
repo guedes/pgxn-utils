@@ -6,4 +6,5 @@ require 'pgxn_utils'
 task = __FILE__.split('-')[1] if File.basename(__FILE__) != 'pgxn_utils'
 command_args = [ task ] + ARGV if task
 
+puts "PGXN Utils version: #{PgxnUtils::VERSION}" if ARGV.empty?
 PgxnUtils::CLI.start( command_args || ARGV )
