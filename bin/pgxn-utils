@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+$:.unshift File.expand_path('..', __FILE__)
+$:.unshift File.expand_path('../../lib', __FILE__)
+require 'pgxn_utils'
+
+task = __FILE__.gsub(/pgxn-utils-/,'').gsub(/-/,'_') if File.basename(__FILE__) =~ /^pgxn-utils-/
+command_args = [ task ] + ARGV if task
+
+puts "PGXN Utils version: #{PgxnUtils::VERSION}" if ARGV.empty?
+PgxnUtils::CLI.start( command_args || ARGV )
