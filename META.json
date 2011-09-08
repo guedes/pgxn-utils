@@ -1,0 +1,12 @@
+{
+    "name": "pgxn_utils",
+    "abstract": "pgxn_utils is a developer tool to create PostgreSQL extensions",
+    "version": "0.1.3",
+    "maintainer": "Dickson S. Guedes <guedes@guedesoft.net>",
+    "license": "postgres",
+    "release_status": "stable",
+    "repository": {
+		"url": "git://github.com/guedes/pgxn-utils.git",
+        "type": "git"
+    }
+}
