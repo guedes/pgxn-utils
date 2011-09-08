@@ -2,8 +2,6 @@
 $:.push File.expand_path("../lib", __FILE__)
 require "pgxn_utils/version"
 
-
-
 Gem::Specification.new do |s|
   s.name        = "pgxn_utils"
   s.version     = PgxnUtils::VERSION
