@@ -4,10 +4,16 @@ pgxn utils
 What is it?
 --------
 
-It aims to be a set of task to help PostgreSQL extension's developers to focus more on the problem that they wants to solve than in the all structure and files and control files need to PGXS to build the extension.
+It aims to be a set of task to help PostgreSQL extension's developers to focus more on the problem that they wants to solve than in all structure and files and control files need to PGXS to build the extension.
 
 How to install it?
 ------------------
+
+If you have pgxn client installed you can do:
+
+    pgxn install pgxn_utils
+
+Or you can install it by rubygems:
 
     gem install pgxn_utils
 

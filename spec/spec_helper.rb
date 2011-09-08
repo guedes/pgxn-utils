@@ -9,7 +9,7 @@ require 'pgxn_utils'
 $counter = 0
 
 LIB_PATH = File.expand_path('../../lib', __FILE__)
-BIN_PATH = File.expand_path('../../bin/pgxn_utils', __FILE__)
+BIN_PATH = File.expand_path('../../bin/pgxn-utils', __FILE__)
 
 DESTINATION_ROOT = File.expand_path('../pgxn_utils', __FILE__)
 FileUtils.rm_rf(DESTINATION_ROOT)
