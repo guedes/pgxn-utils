@@ -2,6 +2,8 @@
 $:.push File.expand_path("../lib", __FILE__)
 require "pgxn_utils/version"
 
+
+
 Gem::Specification.new do |s|
   s.name        = "pgxn_utils"
   s.version     = PgxnUtils::VERSION
@@ -20,6 +22,32 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+  s.post_install_message= <<-EOF
+
+  PGXN Utils version #{PgxnUtils::VERSION} was installed!
+
+  Issues? Please visit: https://github.com/guedes/pgxn-utils/issues
+
+  #{
+	unless `which pgxn`.nil?
+		"PGXN Client found. Cool!"
+	else
+		"PGXN Client is recommended but not found. You could install it if you want, just follow instructions: http://pgxnclient.projects.postgresql.org/"
+	end
+  }
+  #{
+	unless `which validate_pgxn_meta`.nil?
+		"PGXN Meta Validator found. Cool!"
+	else
+		"PGXN Meta Validator is recommended but not found! You could install it if you want, just type: cpan PGXN::Meta::Validator"
+	end
+  }
+
+  Thank you for use this tool!
+
+  Regards, Dickson S. Guedes
+
+  EOF
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
