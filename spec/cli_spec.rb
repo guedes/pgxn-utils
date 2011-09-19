@@ -2,7 +2,12 @@ require File.expand_path('spec/spec_helper')
 
 describe PgxnUtils::CLI do
 
+  before(:all) do
+	system "mv META.json meta.json"
+  end
+
   after(:all) do
+	system "mv meta.json META.json"
     system "rm -rf /tmp/extension.*"
     system "rm -rf extension.*"
   end
@@ -62,7 +67,8 @@ describe PgxnUtils::CLI do
       extension = next_extension
       skeleton extension
 
-      Dir["#{extension}/**/*"].sort.should == [
+      Dir["#{extension}/**/{*,.gitignore}"].sort.should == [
+        "#{extension}/.gitignore",
         "#{extension}/META.json",
         "#{extension}/Makefile",
         "#{extension}/README.md",
