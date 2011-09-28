@@ -57,7 +57,9 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency "zippy", "~> 0.1.0"
       s.add_runtime_dependency "multipart-post", "~> 1.1.2"
       s.add_runtime_dependency "highline", "~> 1.6.2"
+      s.add_runtime_dependency "grit", "~> 2.4.1"
       s.add_development_dependency "rspec"
+      s.add_development_dependency "mocha"
       s.add_development_dependency "simplecov", "~> 0.4.0"
     else
       s.add_dependency "json", "~> 1.5.2"
@@ -66,6 +68,7 @@ Gem::Specification.new do |s|
       s.add_dependency "zippy", "~> 0.1.0"
       s.add_dependency "multipart-post", "~> 1.1.2"
       s.add_dependency "highline", "~> 1.6.2"
+      s.add_dependency "grit", "~> 2.4.1"
     end
   else
     s.add_dependency "json", "~> 1.5.2"
@@ -74,5 +77,6 @@ Gem::Specification.new do |s|
     s.add_dependency "zippy", "~> 0.1.0"
     s.add_dependency "multipart-post", "~> 1.1.2"
     s.add_dependency "highline", "~> 1.6.2"
+    s.add_dependency "grit", "~> 2.4.1"
   end
 end

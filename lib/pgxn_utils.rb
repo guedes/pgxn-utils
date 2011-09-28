@@ -5,6 +5,7 @@ require 'zippy'
 require 'net/http/post/multipart'
 require 'net/https'
 require 'highline/import'
+require 'grit'
 
 module PgxnUtils
  autoload :CLI, 'pgxn_utils/cli'

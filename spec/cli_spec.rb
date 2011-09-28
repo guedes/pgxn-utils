@@ -14,14 +14,15 @@ describe PgxnUtils::CLI do
 
   context "#skeleton" do
     before(:each) do
-      @cli = PgxnUtils::CLI.new
+		system "rm -rf /tmp/extension.*"
+		system "rm -rf extension.*"
     end
 
     it "should accepts or not a target" do
       expected_extension = next_extension
 
       File.should_not exist(expected_extension)
-      skeleton "#{expected_extension}", "-p /tmp"
+      skeleton "#{expected_extension}", %w|-p /tmp|
       File.should exist("/tmp/#{expected_extension}")
 
       File.should_not exist(expected_extension)
@@ -35,10 +36,9 @@ describe PgxnUtils::CLI do
       expected_mail = "guedes@none.here"
       expected_abstract = "Short description"
       expected_description = "Very Long description for my cool extension"
-      expected_tags = "one two tree"
       expected_version = "1.0.0"
 
-      skeleton expected_extension, "-p /tmp -m #{expected_name} -e #{expected_mail} -t #{expected_tags} -a '#{expected_abstract}' -d '#{expected_description}' -v #{expected_version}"
+      skeleton expected_extension, %W|-p /tmp -m #{expected_name} -e #{expected_mail} -t one two tree -a #{expected_abstract} -d #{expected_description} -v #{expected_version}|
 
       meta = File.read("/tmp/#{expected_extension}/META.json")
       meta.should match(/"name": "#{expected_extension}"/)
@@ -86,7 +86,21 @@ describe PgxnUtils::CLI do
       ].sort
     end
 
-    it "should generates a git repo"
+	it "should generates a git repo with --git" do
+		expected_extension = next_extension
+		skeleton "#{expected_extension}", %w|--git|
+
+		File.should exist("#{expected_extension}/.git")
+		lambda{ Grit::Repo.new(expected_extension) }.should_not raise_error
+	end
+
+	it "should not generates a git repo with --no-git" do
+		expected_extension = next_extension
+		skeleton "#{expected_extension}", %w|--no-git|
+
+		File.should_not exist("#{expected_extension}/.git")
+		lambda{ Grit::Repo.new(expected_extension) }.should raise_error
+	end
   end
 
   context "#change" do

@@ -7,6 +7,7 @@ module PgxnUtils
 
     include Thor::Actions
     include PgxnUtils::NoTasks
+	include Grit
 
     desc "skeleton extension_name", "Creates an extension skeleton in current directory"
 
@@ -23,6 +24,7 @@ module PgxnUtils
     method_option :generated_by,      :aliases => "-b", :type => :string, :desc => "Name of extension's generator"
     method_option :tags,              :aliases => "-t", :type => :array,  :desc => "Defines extension's tags"
     method_option :release_status,    :aliases => "-r", :type => :string, :desc => "Initial extension's release status"
+	method_option :git,				  :type => :boolean, :default => false, :desc => "Initialize a git repository after create the extension"
 
     def skeleton(extension_name,target=nil)
       self.target = options[:target] || target || "."
@@ -35,8 +37,9 @@ module PgxnUtils
         say "Can't create an extension overwriting an existing directory.", :red
       else
         self.set_accessors extension_name
-
         directory "root", extension_name
+
+		Repo.init("#{self.target}/#{extension_name}") if options[:git]
       end
     end
 

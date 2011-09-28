@@ -7,6 +7,8 @@ describe PgxnUtils::NoTasks do
   after(:all) do
     rm_r("/tmp/teste")
     rm_r("/tmp/teste2")
+
+    PgxnUtils::NoTasks.send(:remove_method, :options)
   end
 
   context "#resolve_extension_path_and_name" do
