@@ -2,6 +2,28 @@ module PgxnUtils
   module NoTasks
 
     include PgxnUtils::Constants
+	include Grit
+
+	def init_repository(extension_dir)
+		repo = Repo.init(extension_dir)
+		original_dir = File.expand_path "."
+
+		if repo
+			say_status :init, "#{extension_dir}", :green
+
+			FileUtils.chdir extension_dir
+			repo.add "."
+			if repo.commit_index("initial commit")
+				say_status :commit, "initial commit", :green
+			else
+				say_status :failed, "initial commit", :red
+			end
+		else
+			say_status :error, " initializing #{extension_dir}", :red
+		end
+
+		FileUtils.chdir original_dir
+	end
 
     def make_dist_clean(path)
       inside path do

@@ -7,7 +7,6 @@ module PgxnUtils
 
     include Thor::Actions
     include PgxnUtils::NoTasks
-	include Grit
 
     desc "skeleton extension_name", "Creates an extension skeleton in current directory"
 
@@ -31,7 +30,7 @@ module PgxnUtils
 
       if is_extension?("#{self.target}/#{extension_name}")
         say "'#{extension_name}' already exists. Please, use 'change' instead 'skeleton'.", :red
-      elsif is_extension?(".")
+      elsif is_extension?(self.target)
         say "You are inside a extension directory, already. Consider use 'change' instead.", :red
       elsif is_dir?("#{self.target}/#{extension_name}")
         say "Can't create an extension overwriting an existing directory.", :red
@@ -39,7 +38,7 @@ module PgxnUtils
         self.set_accessors extension_name
         directory "root", extension_name
 
-		Repo.init("#{self.target}/#{extension_name}") if options[:git]
+		init_repository("#{self.target}/#{extension_name}") if options[:git]
       end
     end
 
