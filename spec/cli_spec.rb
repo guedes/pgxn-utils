@@ -2,7 +2,12 @@ require File.expand_path('spec/spec_helper')
 
 describe PgxnUtils::CLI do
 
+  before(:all) do
+	FileUtils.mv "META.json", "meta.json"
+  end
+
   after(:all) do
+	FileUtils.mv "meta.json", "META.json"
     system "rm -rf /tmp/extension.*"
     system "rm -rf extension.*"
   end
