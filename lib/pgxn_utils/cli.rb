@@ -23,20 +23,22 @@ module PgxnUtils
     method_option :generated_by,      :aliases => "-b", :type => :string, :desc => "Name of extension's generator"
     method_option :tags,              :aliases => "-t", :type => :array,  :desc => "Defines extension's tags"
     method_option :release_status,    :aliases => "-r", :type => :string, :desc => "Initial extension's release status"
+	method_option :git,				  :type => :boolean, :default => false, :desc => "Initialize a git repository after create the extension"
 
     def skeleton(extension_name,target=nil)
       self.target = options[:target] || target || "."
 
       if is_extension?("#{self.target}/#{extension_name}")
         say "'#{extension_name}' already exists. Please, use 'change' instead 'skeleton'.", :red
-      elsif is_extension?(".")
+      elsif is_extension?(self.target)
         say "You are inside a extension directory, already. Consider use 'change' instead.", :red
       elsif is_dir?("#{self.target}/#{extension_name}")
         say "Can't create an extension overwriting an existing directory.", :red
       else
         self.set_accessors extension_name
-
         directory "root", extension_name
+
+		init_repository("#{self.target}/#{extension_name}") if options[:git]
       end
     end
 
@@ -83,21 +85,30 @@ module PgxnUtils
 
         self.target = path
         archive_name = "#{path}-#{config_options['version']}"
-        ext = "zip"
-        archive = "#{archive_name}.#{ext}"
+		prefix_name  = "#{extension_name}-#{config_options['version']}/"
 
-        if can_zip?(archive)
-          make_dist_clean(path)
+		archive = "#{archive_name}.zip"
+		archived = false
 
-          Zippy.create(archive) do |zip|
-            Dir["#{path}/**/**"].each do |file|
-              zip["#{extension_name}-#{config_options['version']}/#{file.sub(path+'/','')}"] = File.open(file) unless File.directory?(file)
-            end
-          end
-          say_status :create, archive, :green
-        end
-      end
-    end
+		if has_scm?(path)
+			if is_dirty?(path)
+				say "Your repository is dirty! You should commit or stash before continue.", :red
+			else
+				if can_zip?(archive)
+					scm_archive(path, archive, prefix_name)
+					archived = true
+				end
+			end
+		else
+			if can_zip?(archive)
+				make_dist_clean(path)
+				zip_archive(path, archive, prefix_name)
+				archived = true
+			end
+		end
+		say_status(:create, archive, :green) if archived
+	  end
+	end
 
     desc "release filename", "Release an extension to PGXN"
 
