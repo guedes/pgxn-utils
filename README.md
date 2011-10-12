@@ -48,7 +48,7 @@ It is all about tasks. Let's see them:
           create  my_cool_extension/test/sql/base.sql
 
 You can start creating an extension with or without version control. By default `pgxn-utils`
-supports (git)[http://git-scm.org] but it will not create a repository unless you use `--git`
+supports [git](http://git-scm.org) but it will not create a repository unless you use `--git`
 option in the skeleton task.
 
     $ pgxn-utils skeleton my_cool_versioned_extension --git
