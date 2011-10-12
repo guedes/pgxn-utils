@@ -106,8 +106,8 @@ You can start a new extension with git support calling `skeleton` task with
 `--git` flag, then in addition to create skeleton, `pgxn-utils` will initialize
 a git repository and do a initial commit.
 
-Once you have you extension in a git repository your `bundle` will use only the
-commited files to create the archive, but if your repository is dirty `pgxn-utils`
+Once you have your extension in a git repository your `bundle` will use only the
+commited files to create the archive, but if your repository is dirty then `pgxn-utils`
 will hint you to commit or stash your changes, before bundle.
 
 You must be careful with new files not added to repository, because they will NOT
