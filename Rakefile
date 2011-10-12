@@ -87,7 +87,7 @@ Well, since you finished your work you can bundle it to send to [PGXN](http://pg
 Bundle it:
 
     $ pgxn-utils bundle my_cool_extension
-    Extension generated at: /home/guedes/extensions/my_cool_extension-0.0.1.zip
+             create /home/guedes/extensions/my_cool_extension-0.0.1.zip
 
 and release it:
 
@@ -100,9 +100,22 @@ and release it:
 You can export `PGXN_USER` and `PGXN_PASSWORD` environment variables to avoid
 type username and password everytime.
 
+# Git support
+
+You can start a new extension with git support calling `skeleton` task with
+`--git` flag, then in addition to create skeleton, `pgxn-utils` will initialize
+a git repository and do a initial commit.
+
+Once you have you extension in a git repository your `bundle` will use only the
+commited files to create the archive, but if your repository is dirty `pgxn-utils`
+will hint you to commit or stash your changes, before bundle.
+
+You must be careful with new files not added to repository, because they will NOT
+be archived.
+
 # Working in progress
 
-* [git](http://git-scm.org) support
+* improve [git](http://git-scm.org) support
 * proxy support
 * custom templates
 

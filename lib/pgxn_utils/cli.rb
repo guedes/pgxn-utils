@@ -85,21 +85,30 @@ module PgxnUtils
 
         self.target = path
         archive_name = "#{path}-#{config_options['version']}"
-        ext = "zip"
-        archive = "#{archive_name}.#{ext}"
+		prefix_name  = "#{extension_name}-#{config_options['version']}/"
 
-        if can_zip?(archive)
-          make_dist_clean(path)
+		archive = "#{archive_name}.zip"
+		archived = false
 
-          Zippy.create(archive) do |zip|
-            Dir["#{path}/**/**"].each do |file|
-              zip["#{extension_name}-#{config_options['version']}/#{file.sub(path+'/','')}"] = File.open(file) unless File.directory?(file)
-            end
-          end
-          say_status :create, archive, :green
-        end
-      end
-    end
+		if has_scm?(path)
+			if is_dirty?(path)
+				say "Your repository is dirty! You should commit or stash before continue.", :red
+			else
+				if can_zip?(archive)
+					scm_archive(path, archive, prefix_name)
+					archived = true
+				end
+			end
+		else
+			if can_zip?(archive)
+				make_dist_clean(path)
+				zip_archive(path, archive, prefix_name)
+				archived = true
+			end
+		end
+		say_status(:create, archive, :green) if archived
+	  end
+	end
 
     desc "release filename", "Release an extension to PGXN"
 

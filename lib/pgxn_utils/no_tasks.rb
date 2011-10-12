@@ -25,6 +25,11 @@ module PgxnUtils
 		FileUtils.chdir original_dir
 	end
 
+	def is_dirty?(extension_dir)
+		repo = Repo.init(extension_dir)
+		repo.status.map(&:type).uniq != [nil]
+	end
+
     def make_dist_clean(path)
       inside path do
         run 'make distclean', :capture => true
@@ -98,6 +103,27 @@ module PgxnUtils
       end
       [ extension_path, extension_name ]
     end
+
+	def has_scm?(path)
+		begin
+			Repo.new(path)
+		rescue Grit::InvalidGitRepositoryError
+			false
+		end
+	end
+
+	def scm_archive(path, archive, prefix, treeish='master')
+		git = Git.new(Repo.new(path).path)
+		git.archive({:format => "zip", :prefix => prefix, :output => archive}, treeish)
+	end
+
+	def zip_archive(path, archive, prefix)
+		Zippy.create(archive) do |zip|
+			Dir["#{path}/**/**"].each do |file|
+				zip["#{prefix}#{file.sub(path+'/','')}"] = File.open(file) unless File.directory?(file)
+			end
+		end
+	end
 
     def can_zip?(archive)
       can_zip = false
