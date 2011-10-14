@@ -24,6 +24,7 @@ module PgxnUtils
     method_option :tags,              :aliases => "-t", :type => :array,  :desc => "Defines extension's tags"
     method_option :release_status,    :aliases => "-r", :type => :string, :desc => "Initial extension's release status"
 	method_option :git,				  :type => :boolean, :default => false, :desc => "Initialize a git repository after create the extension"
+	method_option :template,		  :type => :string, :default => "sql", :desc => "The template that will be used to create the extension. Expected values are: sql, c, fdw"
 
     def skeleton(extension_name,target=nil)
       self.target = options[:target] || target || "."
@@ -36,7 +37,7 @@ module PgxnUtils
         say "Can't create an extension overwriting an existing directory.", :red
       else
         self.set_accessors extension_name
-        directory "root", extension_name
+        directory options[:template], extension_name
 
 		init_repository("#{self.target}/#{extension_name}") if options[:git]
       end

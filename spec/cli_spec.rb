@@ -63,12 +63,13 @@ describe PgxnUtils::CLI do
       control.should match(/default_version = '#{expected_version}'/)
     end
 
-    it "should generates a skeleton" do
+    it "should generates a default skeleton" do
       extension = next_extension
       skeleton extension
 
-      Dir["#{extension}/**/{*,.gitignore}"].sort.should == [
+      Dir["#{extension}/**/{*,.gitignore,.template}"].sort.should == [
         "#{extension}/.gitignore",
+        "#{extension}/.template",
         "#{extension}/META.json",
         "#{extension}/Makefile",
         "#{extension}/README.md",
@@ -84,6 +85,9 @@ describe PgxnUtils::CLI do
         "#{extension}/test/sql/base.sql",
         "#{extension}/#{extension}.control"
       ].sort
+
+      template = File.read("#{extension}/.template").chomp
+	  template.should == "sql"
     end
 
 	it "should generates a git repo with --git" do
