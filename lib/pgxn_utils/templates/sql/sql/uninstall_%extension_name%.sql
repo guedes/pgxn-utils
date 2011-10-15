@@ -1,0 +1,21 @@
+/*
+ * Author: <%= maintainer %>
+ * Created at: <%= Time.now %>
+ *
+ */
+
+--
+-- This is a example code genereted automaticaly
+-- by pgxn-utils.
+
+SET client_min_messages = warning;
+
+BEGIN;
+
+-- You can use this statements as
+-- template for your extension.
+
+DROP OPERATOR #? (text, text);
+DROP FUNCTION <%= extension_name %>(text, text);
+DROP TYPE <%= extension_name %> CASCADE;
+COMMIT;

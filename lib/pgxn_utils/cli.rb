@@ -62,14 +62,16 @@ module PgxnUtils
     def change(extension_name=".")
       extension_path, extension_name = resolve_extension_path_and_name(extension_name)
 
+	  template_type = File.read("#{extension_path}/.template").chomp
+
       self.target = extension_path
       self.extension_name = extension_name
 
       set_accessors(extension_name)
 
       if is_extension?(extension_path)
-        template "root/META.json.tt", "#{extension_path}/META.json"
-        template "root/%extension_name%.control.tt", "#{extension_path}/%extension_name%.control"
+        template "#{template_type}/META.json.tt", "#{extension_path}/META.json"
+        template "#{template_type}/%extension_name%.control.tt", "#{extension_path}/%extension_name%.control"
       else
         say "'#{extension_name}' doesn't appears to be an extension. Please, supply the extension's name", :red
       end
