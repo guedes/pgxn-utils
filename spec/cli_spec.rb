@@ -59,7 +59,7 @@ describe PgxnUtils::CLI do
       makefile.should match(/EXTENSION    = #{expected_extension}/)
 
       control = File.read("/tmp/#{expected_extension}/#{expected_extension}.control")
-      control.should match(/module_pathname = '\$libdir\/#{expected_extension}'/)
+      #control.should match(/module_pathname = '\$libdir\/#{expected_extension}'/)
       control.should match(/default_version = '#{expected_version}'/)
     end
 
@@ -88,6 +88,48 @@ describe PgxnUtils::CLI do
 
       template = File.read("#{extension}/.template").chomp
 	  template.should == "sql"
+    end
+
+    it "should generates a skeleton for C extensions" do
+      extension = next_extension
+      skeleton extension, %w|--template c|
+
+      Dir["#{extension}/**/{*,.gitignore,.template}"].sort.should == [
+        "#{extension}/.gitignore",
+        "#{extension}/.template",
+        "#{extension}/META.json",
+        "#{extension}/Makefile",
+        "#{extension}/README.md",
+        "#{extension}/doc",
+        "#{extension}/doc/#{extension}.md",
+        "#{extension}/sql",
+        "#{extension}/sql/#{extension}.sql",
+        "#{extension}/sql/uninstall_#{extension}.sql",
+        "#{extension}/src",
+        "#{extension}/src/#{extension}.c",
+        "#{extension}/test",
+        "#{extension}/test/expected",
+        "#{extension}/test/expected/base.out",
+        "#{extension}/test/sql",
+        "#{extension}/test/sql/base.sql",
+        "#{extension}/#{extension}.control"
+      ].sort
+      
+	  makefile = File.read("#{extension}/Makefile")
+	  makefile.should match(/EXTENSION    = #{extension}/)
+
+	  control = File.read("#{extension}/#{extension}.control")
+      control.should match(/module_pathname = '\$libdir\/#{extension}'/)
+	
+      template = File.read("#{extension}/.template").chomp
+	  template.should == "c"
+
+	  c_file = File.read("#{extension}/src/#{extension}.c")
+	  c_file.should match(/#include "postgres.h"/)
+	  c_file.should match(/#include "fmgr.h"/)
+	  c_file.should match(/PG_MODULE_MAGIC;/)
+	  c_file.should match(/PG_FUNCTION_INFO_V1\(#{extension}\);/)
+      c_file.should match(/Datum #{extension}\(PG_FUNCTION_ARGS\);/)
     end
 
 	it "should generates a git repo with --git" do
