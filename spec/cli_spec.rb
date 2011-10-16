@@ -59,7 +59,6 @@ describe PgxnUtils::CLI do
       makefile.should match(/EXTENSION    = #{expected_extension}/)
 
       control = File.read("/tmp/#{expected_extension}/#{expected_extension}.control")
-      #control.should match(/module_pathname = '\$libdir\/#{expected_extension}'/)
       control.should match(/default_version = '#{expected_version}'/)
     end
 
