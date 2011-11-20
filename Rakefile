@@ -22,6 +22,8 @@ end
 desc "Generate README.md"
 task :generate_readme do
   rm_r "/tmp/my_cool_extension" if File.exist?("/tmp/my_cool_extension")
+  rm_r "/tmp/my_cool_c_extension" if File.exist?("/tmp/my_cool_c_extension")
+  rm_r "/tmp/my_cool_fdw_extension" if File.exist?("/tmp/my_cool_fdw_extension")
   rm_r "/tmp/my_cool_versioned_extension" if File.exist?("/tmp/my_cool_versioned_extension")
   readme = File.new("README.md.new", 'w')
   readme.puts <<-README
@@ -31,7 +33,7 @@ pgxn utils
 What is it?
 --------
 
-It aims to be a set of task to help PostgreSQL extension's developers to focus more on the problem that they wants to solve than in all structure and files and control files need to PGXS to build the extension.
+It is a set of task that help developers to create PostgreSQL's extensions, putting the extension's files in the recomended places and supplying tasks to help bundle and release your extension to PGXN.
 
 How to install it?
 ------------------
@@ -57,14 +59,46 @@ It is all about tasks. Let's see them:
     $ pgxn-utils skeleton my_cool_extension
 #{format_cmd_output("skeleton my_cool_extension -p /tmp")}
 
-You can start creating an extension with or without version control. By default `pgxn-utils`
+Thats it! Just start coding! ":)
+
+## Git support
+
+You can start a new extension with or without version control. By default `pgxn-utils`
 supports [git](http://git-scm.org) but it will not create a repository unless you use `--git`
 option in the skeleton task.
 
     $ pgxn-utils skeleton my_cool_versioned_extension --git
 #{format_cmd_output("skeleton my_cool_versioned_extension --git -p /tmp")}
 
-Thats it! Just start coding! ":)
+
+When you create a new extension with git support in addition to create skeleton,
+`pgxn-utils` will initialize a git repository and create the initial commit.
+
+Once you have your extension in a git repository your `bundle` will use only the
+commited files to create the archive, but if your repository is dirty then `pgxn-utils`
+will hint you to commit or stash your changes, before bundle.
+
+You must be careful with new files not added to repository, because they will NOT
+be archived.
+
+## Default templates
+
+`pgxn-utils` has three templates: `sql`, `c` and `fdw`. If you call `skeleton` without
+specifying a template the `sql` is the default. But if your extension will supply some C
+modules or you will create a FDW, you can create the extension calling `skeleton` with a
+`--template` option.
+
+    $ pgxn-utils skeleton my_cool_c_extension --template=c
+#{format_cmd_output("skeleton my_cool_c_extension --template=c -p /tmp")}
+
+
+    $ pgxn-utils skeleton my_cool_fdw_extension --template=fdw
+#{format_cmd_output("skeleton my_cool_fdw_extension --template=fdw -p /tmp")}
+
+The templates contains examples codes and some links to PostgreSQL documentation
+that will try to help you to start coding. SQL and C templates contains some tests
+examples, and the example code will compiles and pass `make installcheck`, but they
+are examples and you must write your own tests and code.
 
 # Changing something
 
@@ -73,7 +107,7 @@ Well suppose you want to change the default maintainer's name and the license, j
     $ pgxn-utils change my_cool_extension --maintainer "Dickson Guedes" --license bsd
 #{format_cmd_output("change my_cool_extension -p /tmp --maintainer 'Dickson Guedes' --license bsd")}
 
-It will wait you decide what to do.
+It will wait until you decide what to do.
 
 For all switches that you can use with *change*, type:
 
@@ -83,8 +117,11 @@ For all switches that you can use with *change*, type:
 # Bundling and Releasing!
 
 Well, since you finished your work you can bundle it to send to [PGXN](http://pgxn.org).
+Note that if you have your extension in a git repository `bundle` will use only the
+commited files to create the archive, but if your repository is dirty then `pgxn-utils`
+will hint you to commit or stash your changes, before bundle.
 
-Bundle it:
+Let's bundle it:
 
     $ pgxn-utils bundle my_cool_extension
              create /home/guedes/extensions/my_cool_extension-0.0.1.zip
@@ -99,19 +136,6 @@ and release it:
 
 You can export `PGXN_USER` and `PGXN_PASSWORD` environment variables to avoid
 type username and password everytime.
-
-# Git support
-
-You can start a new extension with git support calling `skeleton` task with
-`--git` flag, then in addition to create skeleton, `pgxn-utils` will initialize
-a git repository and do a initial commit.
-
-Once you have your extension in a git repository your `bundle` will use only the
-commited files to create the archive, but if your repository is dirty then `pgxn-utils`
-will hint you to commit or stash your changes, before bundle.
-
-You must be careful with new files not added to repository, because they will NOT
-be archived.
 
 # Working in progress
 
