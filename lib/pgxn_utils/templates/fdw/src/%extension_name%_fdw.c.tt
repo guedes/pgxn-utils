@@ -1,0 +1,323 @@
+/*
+ * Author: <%= maintainer %>
+ * Created at: <%= Time.now %>
+ *
+ * This is an *example code* genereted automaticaly
+ * by pgxn-utils, you must write your own code.
+ *
+ * Other examples could be found at:
+ *  http://wiki.postgresql.org/wiki/Foreign_data_wrappers
+ *
+ */
+#include "postgres.h"
+
+/*
+ * You can include more files here if needed.
+ * To use some types, you must include the
+ * correct file here based on:
+ * http://www.postgresql.org/docs/current/static/xfunc-c.html#XFUNC-C-TYPE-TABLE
+ */
+#include "access/reloptions.h"
+#include "catalog/pg_foreign_table.h"
+#include "catalog/pg_foreign_server.h"
+#include "catalog/pg_user_mapping.h"
+#include "commands/defrem.h"
+#include "commands/explain.h"
+#include "foreign/fdwapi.h"
+#include "foreign/foreign.h"
+#include "funcapi.h"
+#include "miscadmin.h"
+#include "nodes/makefuncs.h"
+#include "optimizer/cost.h"
+#include "utils/rel.h"
+#include "utils/builtins.h"
+
+PG_MODULE_MAGIC;
+
+/*
+ * An example how to handle valid options that
+ * could be used by this FDW. You should write
+ * your own.
+ *
+ */
+typedef struct <%= extension_name.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase } %>FdwOption
+{
+	const char *option_name;
+	Oid        option_context;
+};
+
+/*
+ * This is an example how you could enumerate valid options
+ * for your FDW. You should write your own.
+ */
+static struct <%= extension_name.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase } %>FdwOption valid_options[] =
+{
+	{"server_address",		ForeignServerRelationId },
+	{"server_port",			ForeignServerRelationId },
+
+	{"user",				UserMappingRelationId   },
+	{"password",			UserMappingRelationId   },
+
+	{"table",				ForeignTableRelationId},
+
+	{NULL,					InvalidOid}
+};
+
+/*
+ * Handler and Validator functions
+ */
+extern Datum <%= extension_name %>_fdw_handler(PG_FUNCTION_ARGS);
+extern Datum <%= extension_name %>_fdw_validator(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(<%= extension_name %>_fdw_handler);
+PG_FUNCTION_INFO_V1(<%= extension_name %>_fdw_validator);
+
+/*
+ * FDW functions declarations
+ */
+static FdwPlan			*<%= extension_name %>_plan(Oid foreign_table_id, PlannerInfo *root, RelOptInfo *base_relation);
+static void				 <%= extension_name %>_explain(ForeignScanState *node, ExplainState *es);
+static void				 <%= extension_name %>_begin(ForeignScanState *node, int eflags);
+static TupleTableSlot	*<%= extension_name %>_iterate(ForeignScanState *node);
+static void				 <%= extension_name %>_rescan(ForeignScanState *node);
+static void				 <%= extension_name %>_end(ForeignScanState *node);
+
+/*
+ * Helper functions
+ */
+static bool is_valid_option(const char *option, Oid context);
+static void <%= extension_name %>_get_options(Oid foreign_table_id, char **server_address, int *server_port, char **user, char **password, char **table)
+
+/*
+ * FDW functions implementation
+ */
+
+Datum
+<%= extension_name %>_fdw_handler(PG_FUNCTION_ARGS)
+{
+	FdwRoutine *fdw_routine = makeNode(FdwRoutine);
+
+	fdw_routine->PlanForeignScan = <%= extension_name %>_plan;
+	fdw_routine->ExplainForeignScan = <%= extension_name %>_explain;
+	fdw_routine->BeginForeignScan = <%= extension_name %>_begin;
+	fdw_routine->IterateForeignScan = <%= extension_name %>_iterate;
+	fdw_routine->ReScanForeignScan = <%= extension_name %>_rescan;
+	fdw_routine->EndForeignScan = <%= extension_name %>_end;
+
+	PG_RETURN_POINTER(fdw_routine);
+}
+
+Datum
+<%= extension_name %>_fdw_validator(PG_FUNCTION_ARGS)
+{
+	/*
+	 * This is an example how you could validate the
+	 * your FDW options. You should write your own
+	 * validator.
+	 */
+
+	List	   *options_list = untransformRelOptions(PG_GETARG_DATUM(0));
+	Oid			catalog = PG_GETARG_OID(1);
+	ListCell   *cell;
+
+	foreach(cell, options_list)
+	{
+		DefElem    *def = (DefElem *) lfirst(cell);
+
+		if (!is_valid_option(def->defname, catalog))
+		{
+			struct <%= extension_name.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase } %>FdwOption *opt;
+			StringInfoData buf;
+
+			/*
+			 * Unknown option specified, complain about it. Provide a hint
+			 * with list of valid options for the object.
+			 */
+			initStringInfo(&buf);
+			for (opt = valid_options; opt->option_name; opt++)
+			{
+				if (catalog == opt->option_context)
+					appendStringInfo(&buf, "%s%s", (buf.len > 0) ? ", " : "",
+									 opt->option_name);
+			}
+
+			ereport(ERROR,
+					(errcode(ERRCODE_FDW_INVALID_OPTION_NAME),
+					 errmsg("invalid option \"%s\"", def->defname),
+					 errhint("Valid options in this context are: %s",
+							 buf.data)));
+		}
+	}
+
+	PG_RETURN_BOOL(true);
+}
+
+static FdwPlan *
+<%= extension_name %>_plan( Oid foreign_table_id,
+		   PlannerInfo *root,
+		   RelOptInfo  *base_relation)
+{
+	/*
+	 * Plan a scan on a foreign table. This is called when a query is planned.
+	 * foreign_table_id is the pg_class OID of the foreign table. root is the
+	 * planner's global information about the query, and base_relation is the
+	 * planner's information about this table. This is an example and you
+	 * should write your own.
+	 *
+	 * see: http://www.postgresql.org/docs/current/static/fdw-callbacks.html
+	 */
+
+	FdwPlan *fdw_plan;
+
+	fdw_plan = makeNode(FdwPlan);
+
+	fdw_plan->startup_cost = /* calculate and return a startup cost */;
+	base_relation->rows = /* calculate and return an extimation of row many rows this call will return */;
+	fdw_plan->total_cost = /* calculate and return an total cost extimation */;
+
+	return fdw_plan;
+}
+
+static void
+<%= extension_name %>_explain(ForeignScanState *node, ExplainState *es)
+{
+	/*
+	 * Print additional EXPLAIN output for a foreign table scan. This can just
+	 * return if there is no need to print anything. Otherwise, it should call
+	 * ExplainPropertyText and related functions to add fields to the EXPLAIN
+	 * output. This is an example and you should write your own.
+	 *
+	 * see: http://www.postgresql.org/docs/current/static/fdw-callbacks.html
+	 */
+
+	/* calculate real values for costs */
+	ExplainPropertyText("Foreign <%= extension_name.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase } %>", "<%= extension_name %>", es);
+
+	if (es->costs)
+	{
+		ExplainPropertyLong("Foreign <%= extension_name.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase } %> cost", /* calculated costs */, es);
+	}
+}
+
+static void
+<%= extension_name %>_begin(ForeignScanState *node, int eflags)
+{
+	/*
+	 *	Begin executing a foreign scan. This is called during executor startup.
+	 *	It should perform any initialization needed before the scan can start,
+	 *	but not start executing the actual scan (that should be done upon the
+	 *	first call to IterateForeignScan)
+	 *
+	 *	see: http://www.postgresql.org/docs/current/static/fdw-callbacks.html
+	 */
+}
+
+static TupleTableSlot *
+<%= extension_name %>_iterate(ForeignScanState *node)
+{
+	/*
+	 * Fetch one row from the foreign source, returning it in a tuple table slot
+	 * (the node's ScanTupleSlot should be used for this purpose). Return NULL
+	 * if no more rows are available.
+	 *
+	 *	see: http://www.postgresql.org/docs/current/static/fdw-callbacks.html
+	 */
+
+}
+
+static void
+<%= extension_name %>_rescan(ForeignScanState *node)
+{
+	/*
+	 * Restart the scan from the beginning.
+	 *
+	 *	see: http://www.postgresql.org/docs/current/static/fdw-callbacks.html
+	 */
+}
+
+static void
+<%= extension_name %>_end(ForeignScanState *node)
+{
+	/*
+	 * End the scan and release resources. It is normally not important to
+	 * release palloc'd memory, but for example open files and connections
+	 * to remote servers should be cleaned up.
+	 *
+	 *	see: http://www.postgresql.org/docs/current/static/fdw-callbacks.html
+	 */
+}
+
+/*
+ * Helper functions
+ */
+
+/*
+ * Example function to check if the provided option is one of the
+ * valid options where context is the Oid of the catalog holding
+ * the object the option is for.
+ */
+static bool
+is_valid_option(const char *option, Oid context)
+{
+	struct <%= extension_name.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase } %>FdwOption *opt;
+
+	for (opt = valid_options; opt->option_name; opt++)
+	{
+		if (context == opt->option_context && strcmp(opt->option_name, option) == 0)
+			return true;
+	}
+	return false;
+}
+
+/*
+ * Fetch the options for a <%= extension_name %>_fdw foreign table.
+ * This is an example and you should write your own.
+ */
+static void
+<%= extension_name %>_get_options(Oid foreign_table_id, char **server_address, int *server_port, char **user, char **password, char **table)
+{
+	ForeignTable	*f_table;
+	ForeignServer	*f_server;
+	UserMapping		*f_mapping;
+	List			*options;
+	ListCell		*lc;
+
+	/*
+	 * Extract options from FDW objects.
+	 */
+	f_table = GetForeignTable(foreign_table_id);
+	f_server = GetForeignServer(f_table->serverid);
+	f_mapping = GetUserMapping(GetUserId(), f_table->serverid);
+
+	options = NIL;
+	options = list_concat(options, f_table->options);
+	options = list_concat(options, f_server->options);
+	options = list_concat(options, f_mapping->options);
+
+	foreach(lc, options)
+	{
+		DefElem *def = (DefElem *) lfirst(lc);
+
+		if (strcmp(def->defname, "server_address") == 0)
+			*server_address = defGetString(def);
+
+		if (strcmp(def->defname, "server_port") == 0)
+			*server_port = atoi(defGetString(def));
+
+		if (strcmp(def->defname, "user") == 0)
+			*user = defGetString(def);
+
+		if (strcmp(def->defname, "password") == 0)
+			*password = defGetString(def);
+
+		if (strcmp(def->defname, "table") == 0)
+			*table = defGetString(def);
+	}
+
+	/* Default values, if required */
+	if (!*server_address)
+		*server_address = "127.0.0.1";
+
+	if (!*server_port)
+		*port = 12345;
+}

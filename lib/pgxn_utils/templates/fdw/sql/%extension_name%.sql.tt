@@ -1,0 +1,31 @@
+/*
+ * Author: <%= maintainer %>
+ * Created at: <%= Time.now %>
+ *
+ */
+
+--
+-- This is a example code genereted automaticaly
+-- by pgxn-utils.
+
+CREATE OR REPLACE FUNCTION <%= extension_name %>_fdw_validator (text[], oid)
+RETURNS bool
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;
+
+CREATE OR REPLACE FUNCTION <%= extension_name %>_fdw_handler ()
+RETURNS fdw_handler
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;
+
+CREATE FOREIGN DATA WRAPPER <%= extension_name %>_fdw
+VALIDATOR <%= extension_name %>_fdw_validator HANDLER <%= extension_name %>_fdw_handler;
+
+CREATE SERVER <%= extension_name %>_local_service
+FOREIGN DATA WRAPPER <%= extension_name %>_fdw
+OPTIONS ( server_address 'localhost', server_port '389');
+
+-- See more:
+--  http://www.postgresql.org/docs/current/static/sql-createserver.html
+--  http://www.postgresql.org/docs/current/static/sql-createusermapping.html
+--  http://www.postgresql.org/docs/current/static/sql-createforeigndatawrapper.html
