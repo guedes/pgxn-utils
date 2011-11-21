@@ -1,0 +1,4 @@
+# <%= extension_name %> extension
+comment = '<%= abstract %>'
+default_version = '<%= version %>'
+relocatable = true

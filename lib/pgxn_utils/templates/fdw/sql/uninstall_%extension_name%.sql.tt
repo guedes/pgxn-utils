@@ -1,0 +1,14 @@
+/*
+ * Author: <%= maintainer %>
+ * Created at: <%= Time.now %>
+ *
+ */
+
+--
+-- This is a example code genereted automaticaly
+-- by pgxn-utils.
+
+DROP SERVER <%= extension_name %>_local_service;
+DROP FOREIGN DATA WRAPPER <%= extension_name %>_fdw;
+DROP FUNCTION <%= extension_name %>_fdw_handler();
+DROP FUNCTION <%= extension_name %>_fdw_validator(text[], oid);

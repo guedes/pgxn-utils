@@ -1,0 +1,9 @@
+\set ECHO 0
+-- You should write your tests
+SELECT <%= extension_name %>('test');
+ <%= extension_name %> 
+<%= '-' * (extension_name.length + 2) %>
+ 
+(1 row)
+
+ROLLBACK;

@@ -1,0 +1,49 @@
+\set ECHO 0
+-- You should write your tests
+SELECT <%= extension_name %>('foo', 'bar');
+ <%= extension_name %> 
+<%= '-' * (extension_name.length + 2) %>
+ (foo,bar)
+(1 row)
+
+SELECT 'foo' #? 'bar' AS arrowop;
+  arrowop  
+-----------
+ (foo,bar)
+(1 row)
+
+CREATE TABLE ab (
+    a_field <%= extension_name %>
+);
+INSERT INTO ab VALUES('foo' #? 'bar');
+SELECT (a_field).a, (a_field).b FROM ab;
+  a  |  b  
+-----+-----
+ foo | bar
+(1 row)
+
+SELECT (<%= extension_name %>('foo', 'bar')).a;
+  a  
+-----
+ foo
+(1 row)
+
+SELECT (<%= extension_name %>('foo', 'bar')).b;
+  b  
+-----
+ bar
+(1 row)
+
+SELECT ('foo' #? 'bar').a;
+  a  
+-----
+ foo
+(1 row)
+
+SELECT ('foo' #? 'bar').b;
+  b  
+-----
+ bar
+(1 row)
+
+ROLLBACK;
