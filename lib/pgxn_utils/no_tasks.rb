@@ -4,6 +4,20 @@ module PgxnUtils
     include PgxnUtils::Constants
 	include Grit
 
+	def selected_template
+		template = options[:template]
+
+		unless [ 'sql', 'c', 'fdw' ].include?(template)
+			if Dir["#{template}/*"].include?("#{template}/META.json") or
+			   Dir["#{template}/*"].include?("#{template}/META.json.tt")
+				template = File.expand_path(options[:template])
+			else
+				raise "invalid template: #{template}"
+			end
+		end
+		template
+	end
+
 	def init_repository(extension_dir)
 		repo = Repo.init(extension_dir)
 		original_dir = File.expand_path "."

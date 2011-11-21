@@ -24,6 +24,7 @@ module PgxnUtils
     method_option :tags,              :aliases => "-t", :type => :array,  :desc => "Defines extension's tags"
     method_option :release_status,    :aliases => "-r", :type => :string, :desc => "Initial extension's release status"
 	method_option :git,				  :type => :boolean, :default => false, :desc => "Initialize a git repository after create the extension"
+	method_option :template,		  :type => :string, :default => "sql", :desc => "The template that will be used to create the extension. Expected values are: sql, c, fdw"
 
     def skeleton(extension_name,target=nil)
       self.target = options[:target] || target || "."
@@ -36,7 +37,8 @@ module PgxnUtils
         say "Can't create an extension overwriting an existing directory.", :red
       else
         self.set_accessors extension_name
-        directory "root", extension_name
+
+        directory selected_template, extension_name
 
 		init_repository("#{self.target}/#{extension_name}") if options[:git]
       end
@@ -61,14 +63,16 @@ module PgxnUtils
     def change(extension_name=".")
       extension_path, extension_name = resolve_extension_path_and_name(extension_name)
 
+	  template_type = File.read("#{extension_path}/.template").chomp
+
       self.target = extension_path
       self.extension_name = extension_name
 
       set_accessors(extension_name)
 
       if is_extension?(extension_path)
-        template "root/META.json.tt", "#{extension_path}/META.json"
-        template "root/%extension_name%.control.tt", "#{extension_path}/%extension_name%.control"
+        template "#{template_type}/META.json.tt", "#{extension_path}/META.json"
+        template "#{template_type}/%extension_name%.control.tt", "#{extension_path}/%extension_name%.control"
       else
         say "'#{extension_name}' doesn't appears to be an extension. Please, supply the extension's name", :red
       end

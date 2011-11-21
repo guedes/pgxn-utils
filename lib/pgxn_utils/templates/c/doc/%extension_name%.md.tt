@@ -1,0 +1,33 @@
+<%= extension_name %>
+<%= extension_name.gsub(/./,"=") %>
+
+Synopsis
+--------
+
+  Show a brief synopsis of the extension.
+
+Description
+-----------
+
+<%= description %>
+
+Usage
+-----
+
+  Show usage.
+
+Support
+-------
+
+  There is issues tracker? Github? Put this information here.
+
+Author
+------
+
+[<%= maintainer %>]
+
+Copyright and License
+---------------------
+
+Copyright (c) <%= Time.now.strftime("%Y") %> <%= maintainer %>.
+

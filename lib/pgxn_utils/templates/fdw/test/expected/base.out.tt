@@ -1,0 +1,4 @@
+\set ECHO 0
+-- You should write your tests
+
+ROLLBACK;
