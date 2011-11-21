@@ -4,7 +4,9 @@ pgxn utils
 What is it?
 --------
 
-It is a set of task that help developers to create PostgreSQL's extensions, putting the extension's files in the recomended places and supplying tasks to help bundle and release your extension to PGXN.
+It is a set of task that help developers to create PostgreSQL's extensions, putting
+the extension's files in the recomended places and supplying tasks to help bundle
+and release your extension to PGXN.
 
 How to install it?
 ------------------
@@ -54,8 +56,8 @@ Thats it! Just start coding! ":)
 ## Git support
 
 You can start a new extension with or without version control. By default `pgxn-utils`
-supports [git](http://git-scm.org) but it will not create a repository unless you use `--git`
-option in the skeleton task.
+supports [git](http://git-scm.org) but it will not create a repository unless you
+use `--git` option in the skeleton task.
 
     $ pgxn-utils skeleton my_cool_versioned_extension --git
           create  my_cool_versioned_extension
@@ -130,14 +132,23 @@ that will try to help you to start coding. SQL and C templates contains some tes
 examples, and the example code will compiles and pass `make installcheck`, but they
 are examples and you must write your own tests and code.
 
+## Custom templates
+
+If you don't like the templates provided by `pgxn-utils` you can create you own
+templates. Just create a directory where you want with at least a META.json or
+META.json.tt file then you can use your directory as argument to the `--template`
+option.
+
+To see how create your own template, you can use, as example, the
+[templates directory](https://github.com/guedes/pgxn-utils/tree/master/lib/pgxn_utils/templates).
+
 # Changing something
 
 Well suppose you want to change the default maintainer's name and the license, just do:
 
     $ pgxn-utils change my_cool_extension --maintainer "Dickson Guedes" --license bsd
         conflict  META.json
-    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh] d
-	{
+    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh]   {
          "name": "my_cool_extension",
          "abstract": "A short description",
          "description": "A long description",
@@ -165,8 +176,7 @@ Well suppose you want to change the default maintainer's name and the license, j
          }
       }
     Retrying...
-    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh] Y
-	       force  META.json
+    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh]        force  META.json
        identical  my_cool_extension.control
 
 

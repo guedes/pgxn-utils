@@ -37,7 +37,8 @@ module PgxnUtils
         say "Can't create an extension overwriting an existing directory.", :red
       else
         self.set_accessors extension_name
-        directory options[:template], extension_name
+
+        directory selected_template, extension_name
 
 		init_repository("#{self.target}/#{extension_name}") if options[:git]
       end
