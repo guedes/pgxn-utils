@@ -148,7 +148,8 @@ Well suppose you want to change the default maintainer's name and the license, j
 
     $ pgxn-utils change my_cool_extension --maintainer "Dickson Guedes" --license bsd
         conflict  META.json
-    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh]   {
+    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh]
+	{
          "name": "my_cool_extension",
          "abstract": "A short description",
          "description": "A long description",
@@ -176,7 +177,8 @@ Well suppose you want to change the default maintainer's name and the license, j
          }
       }
     Retrying...
-    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh]        force  META.json
+    Overwrite /tmp/my_cool_extension/META.json? (enter "h" for help) [Ynaqdh]
+	       force  META.json
        identical  my_cool_extension.control
 
 
