@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = "pgxn_utils"
   s.version     = PgxnUtils::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.date        = %q{2011-05-06}
+  s.date        = %q{2012-03-06}
   s.authors     = ["Dickson S. Guedes"]
   s.email       = ["guedes@guedesoft.net"]
   s.homepage    = "http://github.com/guedes/pgxn-utils"
