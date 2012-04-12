@@ -1,37 +1,37 @@
 {
-   "name": "<%= extension_name %>",
-   "abstract": "<%= abstract %>",
-   "description": "<%= description %>",
-   "version": "<%= version %>",
-   "maintainer": "<%= maintainer %>",
-   "license": "<%= license %>",
-   "provides": {
-      "<%= extension_name %>": {
-         "abstract": "<%= abstract %>",
-         "file": "sql/<%= extension_name %>.sql",
-         "docfile": "doc/<%= extension_name %>.md",
-         "version": "<%= version %>"
-      }
-   },
-   "release_status": "<%= release_status %>",
-   "resources": {
-      "bugtracker": {
-         "web": "http://change.me"
-      },
-      "repository": {
-        "url":  "git://change.me/<%= extension_name %>.git",
-        "web":  "http://change.me",
-        "type": "git"
-      }
-   },
+    "name": "<%= extension_name %>",
+    "abstract": "<%= abstract %>",
+    "description": "<%= description %>",
+    "version": "<%= version %>",
+    "maintainer": "<%= maintainer %>",
+    "license": "<%= license %>",
+    "provides": {
+        "<%= extension_name %>": {
+            "abstract": "<%= abstract %>",
+            "file": "sql/<%= extension_name %>.sql",
+            "docfile": "doc/<%= extension_name %>.md",
+            "version": "<%= version %>"
+        }
+    },
+    "release_status": "<%= release_status %>",
+    "resources": {
+        "bugtracker": {
+            "web": "http://change.me"
+        },
+        "repository": {
+          "url":  "git://change.me/<%= extension_name %>.git",
+          "web":  "http://change.me",
+          "type": "git"
+        }
+    },
 <% if generated_by %>
-   "generated_by": "<%= generated_by %>",
+    "generated_by": "<%= generated_by %>",
 <% end %>
 <% if tags %>
-   "tags": [ <%= tags.collect { |t| %Q|"#{t}"| }.join(",") %> ],
+    "tags": [ <%= tags.collect { |t| %Q|"#{t}"| }.join(",") %> ],
 <% end %>
-   "meta-spec": {
-      "version": "1.0.0",
-      "url": "http://pgxn.org/meta/spec.txt"
-   }
+    "meta-spec": {
+        "version": "1.0.0",
+        "url": "http://pgxn.org/meta/spec.txt"
+    }
 }
