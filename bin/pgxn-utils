@@ -3,8 +3,20 @@ $:.unshift File.expand_path('..', __FILE__)
 $:.unshift File.expand_path('../../lib', __FILE__)
 require 'pgxn_utils'
 
-task = __FILE__.gsub(/pgxn-utils-/,'').gsub(/-/,'_') if File.basename(__FILE__) =~ /^pgxn-utils-/
-command_args = [ task ] + ARGV if task
+command_args = []
+
+if ARGV.include? "--help"
+	command_args = [ 'help' ]
+end
+
+task = File.basename(__FILE__).gsub(/pgxn-/,'') if File.basename(__FILE__) =~ /^pgxn-(skeleton|bundle|change|release)/
+
+if task
+	command_args = command_args + [ task ]
+	$0 = $0.gsub(/pgxn-.*/,'/pgxn')
+end
+
+command_args = command_args + ARGV
 
 puts "PGXN Utils version: #{PgxnUtils::VERSION}" if ARGV.empty?
 PgxnUtils::CLI.start( command_args || ARGV )
