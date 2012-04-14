@@ -53,8 +53,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency "json", "~> 1.5.2"
       s.add_runtime_dependency "thor", "~> 0.14"
-      s.add_runtime_dependency "rubyzip", "~> 0.9.4"
-      s.add_runtime_dependency "zippy", "~> 0.1.0"
+      s.add_runtime_dependency "rubyzip", "~> 0.9.7"
       s.add_runtime_dependency "multipart-post", "~> 1.1.2"
       s.add_runtime_dependency "highline", "~> 1.6.2"
       s.add_runtime_dependency "grit", "~> 2.4.1"
@@ -64,8 +63,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency "json", "~> 1.5.2"
       s.add_dependency "thor", "~> 0.14"
-      s.add_dependency "rubyzip", "~> 0.9.4"
-      s.add_dependency "zippy", "~> 0.1.0"
+      s.add_dependency "rubyzip", "~> 0.9.7"
       s.add_dependency "multipart-post", "~> 1.1.2"
       s.add_dependency "highline", "~> 1.6.2"
       s.add_dependency "grit", "~> 2.4.1"

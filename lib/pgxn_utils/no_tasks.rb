@@ -132,9 +132,9 @@ module PgxnUtils
 	end
 
 	def zip_archive(path, archive, prefix)
-		Zippy.create(archive) do |zip|
+		Zip::ZipFile.open(archive, Zip::ZipFile::CREATE) do |zip|
 			Dir["#{path}/**/**"].each do |file|
-				zip["#{prefix}#{file.sub(path+'/','')}"] = File.open(file) unless File.directory?(file)
+				zip.add("#{prefix}#{file.sub(path+'/','')}", file) unless File.directory?(file)
 			end
 		end
 	end
