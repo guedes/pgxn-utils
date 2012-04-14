@@ -72,7 +72,6 @@ Gem::Specification.new do |s|
     s.add_dependency "json", "~> 1.5.2"
     s.add_dependency "thor", "~> 0.14"
     s.add_dependency "rubyzip", "~> 0.9.4"
-    s.add_dependency "zippy", "~> 0.1.0"
     s.add_dependency "multipart-post", "~> 1.1.2"
     s.add_dependency "highline", "~> 1.6.2"
     s.add_dependency "grit", "~> 2.4.1"
