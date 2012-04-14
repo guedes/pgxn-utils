@@ -26,20 +26,10 @@ Gem::Specification.new do |s|
 
   Issues? Please visit: https://github.com/guedes/pgxn-utils/issues
 
-  #{
-	unless `which pgxn`.nil?
-		"PGXN Client found. Cool!"
-	else
-		"PGXN Client is recommended but not found. You could install it if you want, just follow instructions: http://pgxnclient.projects.postgresql.org/"
-	end
-  }
-  #{
-	unless `which validate_pgxn_meta`.nil?
-		"PGXN Meta Validator found. Cool!"
-	else
-		"PGXN Meta Validator is recommended but not found! You could install it if you want, just type: cpan PGXN::Meta::Validator"
-	end
-  }
+  Recomended tools:
+
+  - PGXN Client: http://pgxnclient.projects.postgresql.org
+  - PGXN Meta Validator: https://github.com/pgxn/pgxn-meta-validator
 
   Thank you for use this tool!
 
