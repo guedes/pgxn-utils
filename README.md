@@ -32,8 +32,6 @@ It is all about tasks. Let's see them:
       pgxn-utils help [TASK]              # Describe available tasks or one specific task
       pgxn-utils release filename         # Release an extension to PGXN
       pgxn-utils skeleton extension_name  # Create an extension skeleton in current directory
-    
-
 
 # Creating a new extension
 
@@ -76,8 +74,6 @@ use `--git` option in the skeleton task.
             init  /tmp/my_cool_versioned_extension
           commit  initial commit
 
-
-
 When you create a new extension with git support in addition to creating the skeleton,
 `pgxn-utils` will initialize a git repository and create the initial commit.
 
@@ -110,8 +106,6 @@ modules or you will create a FDW, you can create the extension calling `skeleton
           create  my_cool_c_extension/test/expected/base.out
           create  my_cool_c_extension/test/sql/base.sql
 
-
-
     $ pgxn-utils skeleton my_cool_fdw_extension --template=fdw
           create  my_cool_fdw_extension
           create  my_cool_fdw_extension/my_cool_fdw_extension.control
@@ -126,7 +120,6 @@ modules or you will create a FDW, you can create the extension calling `skeleton
           create  my_cool_fdw_extension/src/my_cool_fdw_extension_fdw.c
           create  my_cool_fdw_extension/test/expected/base.out
           create  my_cool_fdw_extension/test/sql/base.sql
-
 
 The templates contain example code and some links to PostgreSQL documentation
 that will try to help you to start coding. SQL and C templates contains some test
@@ -180,7 +173,6 @@ Suppose you want to change the default maintainer's name and the license, just d
 	       force  META.json
        identical  my_cool_extension.control
 
-
 It will wait until you decide what to do.
 
 For all switches that you can use with *change*, type:
@@ -188,7 +180,7 @@ For all switches that you can use with *change*, type:
     $ pgxn-utils help change
     Usage:
       pgxn-utils change [extension_name]
-    
+
     Options:
       -p, [--target=TARGET]                  # Define the target directory
                                              # Default: .
@@ -200,9 +192,8 @@ For all switches that you can use with *change*, type:
       -b, [--generated-by=GENERATED_BY]      # Name of extension's generator
       -t, [--tags=one two three]             # Defines extension's tags
       -r, [--release-status=RELEASE_STATUS]  # Initial extension's release status
-    
-    Changes META's attributes in current extension
 
+    Changes META's attributes in current extension
 
 # Bundling and Releasing!
 
@@ -234,26 +225,26 @@ If you have [PGXN client](http://pgxnclient.projects.postgresql.org/) installed 
 can change the command line from `pgxn-utils some_task` to `pgxn some_task` and this
 will save you some typing. See:
 
-
     $ cd /tmp
     $ pgxn skeleton --help
+    PGXN Utils version: 0.1.4
     Usage:
       pgxn skeleton extension_name
 
     Options:
+          [--git]                            # Initialize a git repository after create the extension
+      -a, [--abstract=ABSTRACT]              # Defines a short description to abstract
       -p, [--target=TARGET]                  # Define the target directory
                                              # Default: .
-      -m, [--maintainer=MAINTAINER]          # Maintainer's name <maintainer@email>
-      -a, [--abstract=ABSTRACT]              # Defines a short description to abstract
-      -l, [--license=LICENSE]                # The extension license
-      -v, [--version=VERSION]                # Initial version
-      -d, [--description=DESCRIPTION]        # A long text that contains more information about extension
-      -b, [--generated-by=GENERATED_BY]      # Name of extension's generator
-      -t, [--tags=one two three]             # Defines extension's tags
-      -r, [--release-status=RELEASE_STATUS]  # Initial extension's release status
-          [--git]                            # Initialize a git repository after create the extension
           [--template=TEMPLATE]              # The template that will be used to create the extension. Expected values are: sql, c, fdw
                                              # Default: sql
+      -r, [--release-status=RELEASE_STATUS]  # Initial extension's release status
+      -d, [--description=DESCRIPTION]        # A long text that contains more information about extension
+      -b, [--generated-by=GENERATED_BY]      # Name of extension's generator
+      -l, [--license=LICENSE]                # The extension license
+      -t, [--tags=one two three]             # Defines extension's tags
+      -v, [--version=VERSION]                # Initial version
+      -m, [--maintainer=MAINTAINER]          # Maintainer's name <maintainer@email>
 
     Creates an extension skeleton in current directory
 
@@ -270,11 +261,11 @@ will save you some typing. See:
           create  test/sql/uninstall_test.sql
           create  test/test/expected/base.out
           create  test/test/sql/base.sql
+
     $ cd test/
     $ pgxn bundle
              run  make distclean from "."
           create  /tmp/test-0.0.1.zip
-
 
 # Working in progress
 
