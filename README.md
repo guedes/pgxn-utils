@@ -228,16 +228,64 @@ and release it:
 You can export the `PGXN_USER` and `PGXN_PASSWORD` environment variables to avoid
 typing your username and password every time.
 
+# PGXN Client integration
+
+If you have [PGXN client](http://pgxnclient.projects.postgresql.org/) installed you
+can change the command line from `pgxn-utils some_task` to `pgxn some_task` and this
+will save you some typing. See:
+
+
+    $ cd /tmp
+    $ pgxn skeleton --help
+    Usage:
+      pgxn skeleton extension_name
+
+    Options:
+      -p, [--target=TARGET]                  # Define the target directory
+                                             # Default: .
+      -m, [--maintainer=MAINTAINER]          # Maintainer's name <maintainer@email>
+      -a, [--abstract=ABSTRACT]              # Defines a short description to abstract
+      -l, [--license=LICENSE]                # The extension license
+      -v, [--version=VERSION]                # Initial version
+      -d, [--description=DESCRIPTION]        # A long text that contains more information about extension
+      -b, [--generated-by=GENERATED_BY]      # Name of extension's generator
+      -t, [--tags=one two three]             # Defines extension's tags
+      -r, [--release-status=RELEASE_STATUS]  # Initial extension's release status
+          [--git]                            # Initialize a git repository after create the extension
+          [--template=TEMPLATE]              # The template that will be used to create the extension. Expected values are: sql, c, fdw
+                                             # Default: sql
+
+    Creates an extension skeleton in current directory
+
+    $ pgxn skeleton test
+          create  test
+          create  test/test.control
+          create  test/.gitignore
+          create  test/.template
+          create  test/META.json
+          create  test/Makefile
+          create  test/README.md
+          create  test/doc/test.md
+          create  test/sql/test.sql
+          create  test/sql/uninstall_test.sql
+          create  test/test/expected/base.out
+          create  test/test/sql/base.sql
+    $ cd test/
+    $ pgxn bundle
+             run  make distclean from "."
+          create  /tmp/test-0.0.1.zip
+
+
 # Working in progress
 
-* improve [git](http://git-scm.org) support
 * proxy support
-* custom templates
+* improve [git](http://git-scm.org) support
+* improve custom templates
 
 Copyright and License
 ---------------------
 
-Copyright (c) 2011 Dickson S. Guedes.
+Copyright (c) 2011-2012 Dickson S. Guedes.
 
 This module is free software; you can redistribute it and/or modify it under
 the [PostgreSQL License](http://www.opensource.org/licenses/postgresql).
