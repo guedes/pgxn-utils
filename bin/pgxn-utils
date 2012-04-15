@@ -18,5 +18,5 @@ end
 
 command_args = command_args + ARGV
 
-puts "PGXN Utils version: #{PgxnUtils::VERSION}" if ARGV.empty?
+puts "PGXN Utils version: #{PgxnUtils::VERSION}" if command_args.include?('help')
 PgxnUtils::CLI.start( command_args || ARGV )
