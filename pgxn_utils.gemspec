@@ -41,29 +41,29 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency "json", "~> 1.5.2"
+      s.add_runtime_dependency "json", "~> 1.6.6"
       s.add_runtime_dependency "thor", "~> 0.14"
       s.add_runtime_dependency "rubyzip", "~> 0.9.7"
-      s.add_runtime_dependency "multipart-post", "~> 1.1.2"
-      s.add_runtime_dependency "highline", "~> 1.6.2"
+      s.add_runtime_dependency "multipart-post", "~> 1.1.5"
+      s.add_runtime_dependency "highline", "~> 1.6.11"
       s.add_runtime_dependency "grit", "~> 2.4.1"
       s.add_development_dependency "rspec"
       s.add_development_dependency "mocha"
       s.add_development_dependency "simplecov", "~> 0.4.0"
     else
-      s.add_dependency "json", "~> 1.5.2"
+      s.add_dependency "json", "~> 1.6.6"
       s.add_dependency "thor", "~> 0.14"
       s.add_dependency "rubyzip", "~> 0.9.7"
-      s.add_dependency "multipart-post", "~> 1.1.2"
-      s.add_dependency "highline", "~> 1.6.2"
+      s.add_dependency "multipart-post", "~> 1.1.5"
+      s.add_dependency "highline", "~> 1.6.11"
       s.add_dependency "grit", "~> 2.4.1"
     end
   else
-    s.add_dependency "json", "~> 1.5.2"
+    s.add_dependency "json", "~> 1.6.6"
     s.add_dependency "thor", "~> 0.14"
-    s.add_dependency "rubyzip", "~> 0.9.4"
-    s.add_dependency "multipart-post", "~> 1.1.2"
-    s.add_dependency "highline", "~> 1.6.2"
+    s.add_dependency "rubyzip", "~> 0.9.7"
+    s.add_dependency "multipart-post", "~> 1.1.5"
+    s.add_dependency "highline", "~> 1.6.11"
     s.add_dependency "grit", "~> 2.4.1"
   end
 end
