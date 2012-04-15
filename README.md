@@ -131,7 +131,7 @@ modules or you will create a FDW, you can create the extension calling `skeleton
 The templates contain example code and some links to PostgreSQL documentation
 that will try to help you to start coding. SQL and C templates contains some test
 examples, and the example code will compile and pass `make installcheck`.
-However, this code is intended to be an example, an you must write your own
+However, this code is intended to be an example, and you must write your own
 tests and code.
 
 ## Custom templates
@@ -141,7 +141,7 @@ Just create a directory with at least a `META.json` or
 `META.json.tt` file and then use your directory as argument to the `--template`
 option.
 
-To see how create your own template, see the examples in the
+To know how create your own template, see the examples in the
 [templates directory](https://github.com/guedes/pgxn-utils/tree/master/lib/pgxn_utils/templates).
 
 # Changing something
