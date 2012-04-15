@@ -145,6 +145,7 @@ module PgxnUtils
       if File.exists?(archive)
         say_status :conflict, archive, :red
         if yes? "Overwrite #{archive}? [yN]"
+		  FileUtils.rm_f archive
           can_zip = true
         else
           can_zip = false
