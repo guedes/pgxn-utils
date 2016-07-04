@@ -11,7 +11,7 @@
 SET client_min_messages = warning;
 
 -- If your extension will create a type you can
--- do somenthing like this
+-- do something like this
 CREATE TYPE <%= extension_name %> AS ( a text, b text );
 
 -- Maybe you want to create some function, so you can use
