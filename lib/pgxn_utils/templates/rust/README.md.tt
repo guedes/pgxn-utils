@@ -3,6 +3,25 @@
 
 <%= description %>
 
+To build it:
+
+Install [rustup](https://www.rustup.rs/).
+
+Install nightly build
+
+```
+rustup install nightly
+rustup override set nightly
+```
+
+Build with cargo
+
+```
+cargo build
+```
+
+TODO: fix those make instructions
+
 To build it, just do this:
 
     make
