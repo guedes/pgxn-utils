@@ -1,0 +1,15 @@
+[package]
+
+name = "<%= extension_name %>"
+version = "<%= version %>"
+authors = ["<%= maintainer %>"]
+
+[lib]
+name = "<%= extension_name %>"
+crate-type = ["dylib"]
+
+[dependencies.postgres_extension]
+path = "https://github.com/thehydroimpulse/postgres-extension.rs"
+
+[dependencies.postgres_extension_macros]
+path = "https://github.com/thehydroimpulse/postgres-extension.rs"

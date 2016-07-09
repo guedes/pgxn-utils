@@ -7,7 +7,7 @@ module PgxnUtils
 	def selected_template
 		template = options[:template]
 
-		unless [ 'sql', 'c', 'fdw' ].include?(template)
+		unless [ 'sql', 'c', 'fdw', 'rust' ].include?(template)
 			if Dir["#{template}/*"].include?("#{template}/META.json") or
 			   Dir["#{template}/*"].include?("#{template}/META.json.tt")
 				template = File.expand_path(options[:template])
