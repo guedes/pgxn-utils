@@ -1,6 +1,6 @@
 require 'thor'
 require 'json'
-require 'zip/zip'
+require 'zip'
 require 'net/http/post/multipart'
 require 'net/https'
 require 'highline/import'

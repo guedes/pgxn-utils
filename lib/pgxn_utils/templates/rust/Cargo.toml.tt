@@ -1,0 +1,18 @@
+[package]
+
+name = "<%= extension_name %>"
+version = "<%= version %>"
+authors = ["<%= maintainer %>"]
+
+[lib]
+name = "<%= extension_name %>"
+crate-type = ["dylib"]
+
+[dependencies.postgres_extension]
+git = "https://github.com/jeff-davis/postgres-extension.rs.git"
+branch = "fixes"
+
+[dependencies.postgres_extension_macros]
+git = "https://github.com/jeff-davis/postgres-extension.rs.git"
+branch = "fixes"
+

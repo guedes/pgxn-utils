@@ -3,19 +3,19 @@ require File.expand_path('spec/spec_helper')
 describe PgxnUtils::CLI do
 
   before(:all) do
-	FileUtils.mv "META.json", "meta.json"
+    FileUtils.mv "META.json", "meta-bak.json"
   end
 
   after(:all) do
-	FileUtils.mv "meta.json", "META.json"
+    FileUtils.mv "meta-bak.json", "META.json"
     system "rm -rf /tmp/extension.*"
     system "rm -rf extension.*"
   end
 
   context "#skeleton" do
     before(:each) do
-		system "rm -rf /tmp/extension.*"
-		system "rm -rf extension.*"
+      system "rm -rf /tmp/extension.*"
+      system "rm -rf extension.*"
     end
 
     it "should accepts or not a target" do
@@ -38,7 +38,7 @@ describe PgxnUtils::CLI do
       expected_description = "Very Long description for my cool extension"
       expected_version = "1.0.0"
 
-      skeleton expected_extension, %W|-p /tmp -m #{expected_name} -e #{expected_mail} -t one two tree -a #{expected_abstract} -d #{expected_description} -v #{expected_version}|
+      skeleton "#{expected_extension}", %W|-p /tmp -m #{expected_name} -e #{expected_mail} -t one two tree -a #{expected_abstract} -d #{expected_description} -v #{expected_version}|
 
       meta = File.read("/tmp/#{expected_extension}/META.json")
       meta.should match(/"name": "#{expected_extension}"/)
@@ -86,7 +86,7 @@ describe PgxnUtils::CLI do
       ].sort
 
       template = File.read("#{extension}/.template").chomp
-	  template.should == "sql"
+      template.should == "sql"
     end
 
     it "should generates a skeleton for C extensions" do
@@ -113,39 +113,78 @@ describe PgxnUtils::CLI do
         "#{extension}/test/sql/base.sql",
         "#{extension}/#{extension}.control"
       ].sort
-      
-	  makefile = File.read("#{extension}/Makefile")
-	  makefile.should match(/EXTENSION    = #{extension}/)
 
-	  control = File.read("#{extension}/#{extension}.control")
+      makefile = File.read("#{extension}/Makefile")
+      makefile.should match(/EXTENSION    = #{extension}/)
+
+      control = File.read("#{extension}/#{extension}.control")
       control.should match(/module_pathname = '\$libdir\/#{extension}'/)
-	
-      template = File.read("#{extension}/.template").chomp
-	  template.should == "c"
 
-	  c_file = File.read("#{extension}/src/#{extension}.c")
-	  c_file.should match(/#include "postgres.h"/)
-	  c_file.should match(/#include "fmgr.h"/)
-	  c_file.should match(/PG_MODULE_MAGIC;/)
-	  c_file.should match(/PG_FUNCTION_INFO_V1\(#{extension}\);/)
+      template = File.read("#{extension}/.template").chomp
+      template.should == "c"
+
+      c_file = File.read("#{extension}/src/#{extension}.c")
+      c_file.should match(/#include "postgres.h"/)
+      c_file.should match(/#include "fmgr.h"/)
+      c_file.should match(/PG_MODULE_MAGIC;/)
+      c_file.should match(/PG_FUNCTION_INFO_V1\(#{extension}\);/)
       c_file.should match(/Datum #{extension}\(PG_FUNCTION_ARGS\);/)
     end
 
-	it "should generates a git repo with --git" do
-		expected_extension = next_extension
-		skeleton "#{expected_extension}", %w|--git|
+    it "should generates a skeleton for Rust extensions" do
+      extension = next_extension
+      skeleton extension, %w|--template rust|
 
-		File.should exist("#{expected_extension}/.git")
-		lambda{ Grit::Repo.new(expected_extension) }.should_not raise_error
-	end
+      Dir["#{extension}/**/{*,.gitignore,.template}"].sort.should == [
+        "#{extension}/.gitignore",
+        "#{extension}/.template",
+        "#{extension}/Cargo.toml",
+        "#{extension}/META.json",
+        "#{extension}/Makefile",
+        "#{extension}/README.md",
+        "#{extension}/doc",
+        "#{extension}/doc/#{extension}.md",
+        "#{extension}/sql",
+        "#{extension}/sql/#{extension}.sql",
+        "#{extension}/sql/uninstall_#{extension}.sql",
+        "#{extension}/src",
+        "#{extension}/src/#{extension}.rs",
+        "#{extension}/test",
+        "#{extension}/test/expected",
+        "#{extension}/test/expected/base.out",
+        "#{extension}/test/sql",
+        "#{extension}/test/sql/base.sql",
+        "#{extension}/#{extension}.control"
+      ].sort
 
-	it "should not generates a git repo with --no-git" do
-		expected_extension = next_extension
-		skeleton "#{expected_extension}", %w|--no-git|
+      makefile = File.read("#{extension}/Makefile")
+      makefile.should match(/EXTENSION    = #{extension}/)
 
-		File.should_not exist("#{expected_extension}/.git")
-		lambda{ Grit::Repo.new(expected_extension) }.should raise_error
-	end
+      control = File.read("#{extension}/#{extension}.control")
+      control.should match(/module_pathname = '\$libdir\/#{extension}'/)
+
+      template = File.read("#{extension}/.template").chomp
+      template.should == "rust"
+
+      rs_file = File.read("#{extension}/src/#{extension}.rs")
+      rs_file.should match(/pub fn #{extension}\(/)
+    end
+
+    it "should generates a git repo with --git" do
+      expected_extension = next_extension
+      skeleton "#{expected_extension}", %w|--git|
+
+      File.should exist("#{expected_extension}/.git")
+      lambda{ Grit::Repo.new(expected_extension) }.should_not raise_error
+    end
+
+    it "should not generates a git repo with --no-git" do
+      expected_extension = next_extension
+      skeleton "#{expected_extension}", %w|--no-git|
+
+      File.should_not exist("#{expected_extension}/.git")
+      lambda{ Grit::Repo.new(expected_extension) }.should raise_error
+    end
   end
 
   context "#change" do

@@ -35,7 +35,7 @@ describe PgxnUtils::NoTasks do
 
       cd original_dir
 
-      resolved_path.should == "#{destination_dir}/#{extension_name}"
+      resolved_path.should == "/private#{destination_dir}/#{extension_name}"
       resolved_name.should == extension_name
     end
 
