@@ -2,7 +2,7 @@
 	"name": "pgxn_utils",
 	"abstract": "pgxn-utils is a development tool to create PostgreSQL extensions",
 	"description": "pgxn-utils provides a set of tasks that help developers to create PostgreSQL extensions, putting the extension's files in the recomended places and helping to bundle and release them to PGXN.",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"maintainer": "Dickson S. Guedes <guedes@guedesoft.net>",
 	"license": "postgresql",
 	"release_status": "stable",
@@ -19,7 +19,7 @@
 	"provides": {
 		"pgxn_utils": {
 			"file": "pgxn_utils",
-			"version": "0.1.4"
+			"version": "0.1.5"
 		}
 	},
 	"meta-spec": {
