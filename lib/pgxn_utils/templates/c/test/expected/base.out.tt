@@ -1,4 +1,4 @@
-\set ECHO 0
+\set ECHO none
 -- You should write your tests
 SELECT <%= extension_name %>('test');
  <%= extension_name %> 
