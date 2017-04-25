@@ -1,6 +1,9 @@
 pgxn utils
 ==========
 
+[![Gem Version](https://badge.fury.io/rb/pgxn_utils.svg)](https://badge.fury.io/rb/pgxn_utils)
+[![PGXN version](https://badge.fury.io/pg/pgxn_utils.svg)](https://badge.fury.io/pg/pgxn_utils)
+
 What is it?
 -----------
 
