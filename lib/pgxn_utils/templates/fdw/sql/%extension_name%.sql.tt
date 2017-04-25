@@ -5,7 +5,7 @@
  */
 
 --
--- This is a example code genereted automaticaly
+-- This is a example code generated automatically
 -- by pgxn-utils.
 
 CREATE OR REPLACE FUNCTION <%= extension_name %>_fdw_validator (text[], oid)

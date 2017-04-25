@@ -5,7 +5,7 @@ What is it?
 -----------
 
 PGXN Utils are a set of tasks that help developers to create PostgreSQL
-extensions, putting the extension's files in the recomended places and helping
+extensions, putting the extension's files in the recommended places and helping
 to bundle and release them to PGXN.
 
 How to install it?

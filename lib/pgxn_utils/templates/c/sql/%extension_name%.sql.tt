@@ -5,7 +5,7 @@
  */
 
 --
--- This is a example code genereted automaticaly
+-- This is a example code generated automatically
 -- by pgxn-utils.
 
 -- This is how you define a C function in PostgreSQL.

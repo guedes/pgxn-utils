@@ -2,7 +2,7 @@
  * Author: <%= maintainer %>
  * Created at: <%= Time.now %>
  *
- * This is an *example code* genereted automaticaly
+ * This is an *example code* generated automatically
  * by pgxn-utils, you must write your own code.
  *
  * Other examples could be found at:
