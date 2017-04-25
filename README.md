@@ -1,11 +1,14 @@
 pgxn utils
 ==========
 
+[![Gem Version](https://badge.fury.io/rb/pgxn_utils.svg)](https://badge.fury.io/rb/pgxn_utils)
+[![PGXN version](https://badge.fury.io/pg/pgxn_utils.svg)](https://badge.fury.io/pg/pgxn_utils)
+
 What is it?
 -----------
 
 PGXN Utils are a set of tasks that help developers to create PostgreSQL
-extensions, putting the extension's files in the recomended places and helping
+extensions, putting the extension's files in the recommended places and helping
 to bundle and release them to PGXN.
 
 How to install it?
@@ -227,7 +230,7 @@ will save you some typing. See:
 
     $ cd /tmp
     $ pgxn skeleton --help
-    PGXN Utils version: 0.1.4
+    PGXN Utils version: 0.1.5
     Usage:
       pgxn skeleton extension_name
 

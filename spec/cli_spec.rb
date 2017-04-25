@@ -30,7 +30,7 @@ describe PgxnUtils::CLI do
       File.should exist(expected_extension)
     end
 
-    it "should store author's name, email, short_description, long_desctiption, tags" do
+    it "should store author's name, email, short_description, long_description, tags" do
       expected_extension = next_extension
       expected_name = "Guedes"
       expected_mail = "guedes@none.here"

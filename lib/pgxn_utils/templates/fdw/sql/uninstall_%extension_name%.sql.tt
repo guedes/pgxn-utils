@@ -5,7 +5,7 @@
  */
 
 --
--- This is a example code genereted automaticaly
+-- This is a example code generated automatically
 -- by pgxn-utils.
 
 DROP SERVER <%= extension_name %>_local_service;
