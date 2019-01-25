@@ -230,7 +230,7 @@ will save you some typing. See:
 
     $ cd /tmp
     $ pgxn skeleton --help
-    PGXN Utils version: 0.1.5
+    PGXN Utils version: 0.1.6
     Usage:
       pgxn skeleton extension_name
 
