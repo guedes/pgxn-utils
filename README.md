@@ -279,7 +279,7 @@ will save you some typing. See:
 Copyright and License
 ---------------------
 
-Copyright (c) 2011-2012 Dickson S. Guedes.
+Copyright (c) 2011-2019 Dickson S. Guedes.
 
 This module is free software; you can redistribute it and/or modify it under
 the [PostgreSQL License](http://www.opensource.org/licenses/postgresql).
